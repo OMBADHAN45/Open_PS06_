@@ -1,0 +1,855 @@
+     1→     1→// Rich, realistic mock data for the DRISHTI platform demo.
+     2→     2→// Pre-populated students (Om, Mayur, Prakhar, Viraj) with GitHub commit
+     3→     3→// permalinks, verified skills, missing gaps, proctored test logs.
+     4→     4→
+     5→     5→export type SkillStatus = "verified" | "unverified" | "failed";
+     6→     6→
+     7→     7→export interface GitHubEvidence {
+     8→     8→  id: string;
+     9→     9→  kind: "github";
+    10→    10→  skill: string; // canonical
+    11→    11→  repo: string;
+    12→    12→  filePath: string;
+    13→    13→  line?: number;
+    14→    14→  commitSha: string;
+    15→    15→  commitUrl: string;
+    16→    16→  snippet: string;
+    17→    17→  scannedAt: number;
+    18→    18→}
+    19→    19→
+    20→    20→export interface AssessmentEvidence {
+    21→    21→  id: string;
+    22→    22→  kind: "assessment";
+    23→    23→  skill: string;
+    24→    24→  score: number; // 0..100
+    25→    25→  passed: boolean;
+    26→    26→  warnings: number;
+    27→    27→  takenAt: number;
+    28→    28→  durationSec: number;
+    29→    29→}
+    30→    30→
+    31→    31→export interface ProjectEvidence {
+    32→    32→  id: string;
+    33→    33→  kind: "project";
+    34→    34→  skill: string;
+    35→    35→  title: string;
+    36→    36→  repo: string;
+    37→    37→  faculty: string;
+    38→    38→  grade: string; // A+, A, etc
+    39→    39→  rubric: { criterion: string; score: number; max: number }[];
+    40→    40→  complexity: number; // 1..5
+    41→    41→}
+    42→    42→
+    43→    43→export interface StudentSkill {
+    44→    44→  canonical: string;
+    45→    45→  status: SkillStatus;
+    46→    46→  assessmentId?: string;
+    47→    47→  githubIds?: string[];
+    48→    48→  projectId?: string;
+    49→    49→}
+    50→    50→
+    51→    51→export interface ProctorLogEntry {
+    52→    52→  type: string;
+    53→    53→  time: number;
+    54→    54→  message: string;
+    55→    55→}
+    56→    56→
+    57→    57→export interface StudentProfile {
+    58→    58→  id: string;
+    59→    59→  name: string;
+    60→    60→  roll: string;
+    61→    61→  branch: string;
+    62→    62→  batch: string;
+    63→    63→  cgpa: number;
+    64→    64→  githubUser: string;
+    65→    65→  reposScanned: number;
+    66→    66→  verificationScore: number;
+    67→    67→  avatarColor: string;
+    68→    68→  skills: StudentSkill[];
+    69→    69→  evidence: (GitHubEvidence | AssessmentEvidence | ProjectEvidence)[];
+    70→    70→  assessments: AssessmentEvidence[];
+    71→    71→  projects: ProjectEvidence[];
+    72→    72→}
+    73→    73→
+    74→    74→export interface JobOpening {
+    75→    75→  id: string;
+    76→    76→  company: string;
+    77→    77→  role: string;
+    78→    78→  location: string;
+    79→    79→  ctc: string;
+    80→    80→  eligibility: string;
+    81→    81→  requiredSkills: string[];
+    82→    82→  preferredSkills: string[];
+    83→    83→  description: string;
+    84→    84→  sources: string[];
+    85→    85→  postedAt: number;
+    86→    86→  alumniCount?: number;
+    87→    87→}
+    88→    88→
+    89→    89→export type ApplicationStage =
+    90→    90→  | "Applied"
+    91→    91→  | "Shortlisted"
+    92→    92→  | "Assessment"
+    93→    93→  | "Technical Interview"
+    94→    94→  | "HR Interview"
+    95→    95→  | "Offer";
+    96→    96→
+    97→    97→export const PIPELINE_STAGES: ApplicationStage[] = [
+    98→    98→  "Applied",
+    99→    99→  "Shortlisted",
+   100→   100→  "Assessment",
+   101→   101→  "Technical Interview",
+   102→   102→  "HR Interview",
+   103→   103→  "Offer",
+   104→   104→];
+   105→   105→
+   106→   106→export interface Application {
+   107→   107→  id: string;
+   108→   108→  studentId: string;
+   109→   109→  jobId: string;
+   110→   110→  stage: ApplicationStage;
+   111→   111→  appliedAt: number;
+   112→   112→  fitScore?: number;
+   113→   113→}
+   114→   114→
+   115→   115→export interface InterviewQuestion {
+   116→   116→  id: string;
+   117→   117→  company: string;
+   118→   118→  role: string;
+   119→   119→  question: string;
+   120→   120→  category: string;
+   121→   121→  difficulty: "Easy" | "Medium" | "Hard";
+   122→   122→  reportedBy: string;
+   123→   123→  reportedAt: number;
+   124→   124→}
+   125→   125→
+   126→   126→// ---------------------------------------------------------------------------
+   127→   127→// STUDENTS
+   128→   128→// ---------------------------------------------------------------------------
+   129→   129→
+   130→   130→const NOW = Date.now();
+   131→   131→const DAY = 86400000;
+   132→   132→
+   133→   133→export const STUDENTS: StudentProfile[] = [
+   134→   134→  {
+   135→   135→    id: "stu_om",
+   136→   136→    name: "Om Deshmukh",
+   137→   137→    roll: "TECO21123",
+   138→   138→    branch: "Computer Engineering",
+   139→   139→    batch: "2026",
+   140→   140→    cgpa: 8.9,
+   141→   141→    githubUser: "omcodes",
+   142→   142→    reposScanned: 14,
+   143→   143→    verificationScore: 91,
+   144→   144→    avatarColor: "#9fe0ff",
+   145→   145→    skills: [
+   146→   146→      { canonical: "Python", status: "verified", assessmentId: "as_om_py", githubIds: ["gh_om_py1"] },
+   147→   147→      { canonical: "SQL", status: "verified", assessmentId: "as_om_sql", githubIds: ["gh_om_sql1"] },
+   148→   148→      { canonical: "React", status: "verified", githubIds: ["gh_om_react1"] },
+   149→   149→      { canonical: "Node.js", status: "verified", githubIds: ["gh_om_node1", "gh_om_node2"] },
+   150→   150→      { canonical: "PostgreSQL", status: "verified", githubIds: ["gh_om_pg1"] },
+   151→   151→      { canonical: "Docker", status: "failed", assessmentId: "as_om_docker_fail" },
+   152→   152→      { canonical: "AWS", status: "unverified" },
+   153→   153→      { canonical: "Redis", status: "verified", githubIds: ["gh_om_redis1"] },
+   154→   154→    ],
+   155→   155→    evidence: [
+   156→   156→      {
+   157→   157→        id: "gh_om_py1",
+   158→   158→        kind: "github",
+   159→   159→        skill: "Python",
+   160→   160→        repo: "campus-scheduler",
+   161→   161→        filePath: "scheduler/core.py",
+   162→   162→        line: 42,
+   163→   163→        commitSha: "a1f3c90",
+   164→   164→        commitUrl: "https://github.com/omcodes/campus-scheduler/commit/a1f3c90",
+   165→   165→        snippet: "def schedule(courses):\n    return sorted(courses, key=lambda c: c.start)",
+   166→   166→        scannedAt: NOW - 6 * DAY,
+   167→   167→      },
+   168→   168→      {
+   169→   169→        id: "gh_om_sql1",
+   170→   170→        kind: "github",
+   171→   171→        skill: "SQL",
+   172→   172→        repo: "campus-scheduler",
+   173→   173→        filePath: "db/migrations/002_indexes.sql",
+   174→   174→        line: 12,
+   175→   175→        commitSha: "b27e1aa",
+   176→   176→        commitUrl: "https://github.com/omcodes/campus-scheduler/commit/b27e1aa",
+   177→   177→        snippet: "CREATE INDEX CONCURRENTLY idx_enroll_student ON enrollments(student_id);",
+   178→   178→        scannedAt: NOW - 6 * DAY,
+   179→   179→      },
+   180→   180→      {
+   181→   181→        id: "gh_om_react1",
+   182→   182→        kind: "github",
+   183→   183→        skill: "React",
+   184→   184→        repo: "placement-dashboard",
+   185→   185→        filePath: "src/components/SkillMatrix.tsx",
+   186→   186→        line: 18,
+   187→   187→        commitSha: "c9d2f10",
+   188→   188→        commitUrl: "https://github.com/omcodes/placement-dashboard/commit/c9d2f10",
+   189→   189→        snippet: "export function SkillMatrix({ skills }) {\n  return <ul>{skills.map(s => <li key={s.canonical}>{s.canonical}</li>)}</ul>;\n}",
+   190→   190→        scannedAt: NOW - 3 * DAY,
+   191→   191→      },
+   192→   192→      {
+   193→   193→        id: "gh_om_node1",
+   194→   194→        kind: "github",
+   195→   195→        skill: "Node.js",
+   196→   196→        repo: "auth-service",
+   197→   197→        filePath: "src/server.ts",
+   198→   198→        line: 8,
+   199→   199→        commitSha: "d4a8b22",
+   200→   200→        commitUrl: "https://github.com/omcodes/auth-service/commit/d4a8b22",
+   201→   201→        snippet: "import express from 'express';\nconst app = express();\napp.listen(3000);",
+   202→   202→        scannedAt: NOW - 2 * DAY,
+   203→   203→      },
+   204→   204→      {
+   205→   205→        id: "gh_om_node2",
+   206→   206→        kind: "github",
+   207→   207→        skill: "Node.js",
+   208→   208→        repo: "cache-middleware",
+   209→   209→        filePath: "src/middleware/cache.ts",
+   210→   210→        line: 12,
+   211→   211→        commitSha: "e7c1f55",
+   212→   212→        commitUrl: "https://github.com/omcodes/cache-middleware/commit/e7c1f55",
+   213→   213→        snippet: "import Redis from 'ioredis';\nconst redis = new Redis(process.env.REDIS_URL);",
+   214→   214→        scannedAt: NOW - 1 * DAY,
+   215→   215→      },
+   216→   216→      {
+   217→   217→        id: "gh_om_pg1",
+   218→   218→        kind: "github",
+   219→   219→        skill: "PostgreSQL",
+   220→   220→        repo: "auth-service",
+   221→   221→        filePath: "src/db/client.ts",
+   222→   222→        line: 5,
+   223→   223→        commitSha: "f0b2e88",
+   224→   224→        commitUrl: "https://github.com/omcodes/auth-service/commit/f0b2e88",
+   225→   225→        snippet: "import { Pool } from 'pg';\nexport const pool = new Pool({ connectionString: process.env.DATABASE_URL });",
+   226→   226→        scannedAt: NOW - 2 * DAY,
+   227→   227→      },
+   228→   228→      {
+   229→   229→        id: "gh_om_redis1",
+   230→   230→        kind: "github",
+   231→   231→        skill: "Redis",
+   232→   232→        repo: "cache-middleware",
+   233→   233→        filePath: "src/middleware/cache.ts",
+   234→   234→        line: 12,
+   235→   235→        commitSha: "e7c1f55",
+   236→   236→        commitUrl: "https://github.com/omcodes/cache-middleware/commit/e7c1f55",
+   237→   237→        snippet: "import Redis from 'ioredis';\nconst redis = new Redis(process.env.REDIS_URL);",
+   238→   238→        scannedAt: NOW - 1 * DAY,
+   239→   239→      },
+   240→   240→      {
+   241→   241→        id: "as_om_py",
+   242→   242→        kind: "assessment",
+   243→   243→        skill: "Python",
+   244→   244→        score: 88,
+   245→   245→        passed: true,
+   246→   246→        warnings: 0,
+   247→   247→        takenAt: NOW - 5 * DAY,
+   248→   248→        durationSec: 540,
+   249→   249→      },
+   250→   250→      {
+   251→   251→        id: "as_om_sql",
+   252→   252→        kind: "assessment",
+   253→   253→        skill: "SQL",
+   254→   254→        score: 91,
+   255→   255→        passed: true,
+   256→   256→        warnings: 0,
+   257→   257→        takenAt: NOW - 4 * DAY,
+   258→   258→        durationSec: 480,
+   259→   259→      },
+   260→   260→      {
+   261→   261→        id: "as_om_docker_fail",
+   262→   262→        kind: "assessment",
+   263→   263→        skill: "Docker",
+   264→   264→        score: 48,
+   265→   265→        passed: false,
+   266→   266→        warnings: 3,
+   267→   267→        takenAt: NOW - 9 * DAY,
+   268→   268→        durationSec: 720,
+   269→   269→      },
+   270→   270→    ],
+   271→   271→    assessments: [
+   272→   272→      { id: "as_om_py", kind: "assessment", skill: "Python", score: 88, passed: true, warnings: 0, takenAt: NOW - 5 * DAY, durationSec: 540 },
+   273→   273→      { id: "as_om_sql", kind: "assessment", skill: "SQL", score: 91, passed: true, warnings: 0, takenAt: NOW - 4 * DAY, durationSec: 480 },
+   274→   274→      { id: "as_om_docker_fail", kind: "assessment", skill: "Docker", score: 48, passed: false, warnings: 3, takenAt: NOW - 9 * DAY, durationSec: 720 },
+   275→   275→    ],
+   276→   276→    projects: [
+   277→   277→      {
+   278→   278→        id: "pr_om_1",
+   279→   279→        kind: "project",
+   280→   280→        skill: "Node.js",
+   281→   281→        title: "Evidence-Backed Auth Service",
+   282→   282→        repo: "auth-service",
+   283→   283→        faculty: "Prof. S. Iyer",
+   284→   284→        grade: "A+",
+   285→   285→        rubric: [
+   286→   286→          { criterion: "Architecture", score: 9, max: 10 },
+   287→   287→          { criterion: "Code Quality", score: 9, max: 10 },
+   288→   288→          { criterion: "Testing", score: 8, max: 10 },
+   289→   289→          { criterion: "Documentation", score: 9, max: 10 },
+   290→   290→        ],
+   291→   291→        complexity: 4,
+   292→   292→      },
+   293→   293→      {
+   294→   294→        id: "pr_om_2",
+   295→   295→        kind: "project",
+   296→   296→        skill: "React",
+   297→   297→        title: "Placement Dashboard",
+   298→   298→        repo: "placement-dashboard",
+   299→   299→        faculty: "Prof. R. Kulkarni",
+   300→   300→        grade: "A",
+   301→   301→        rubric: [
+   302→   302→          { criterion: "Architecture", score: 8, max: 10 },
+   303→   303→          { criterion: "Code Quality", score: 8, max: 10 },
+   304→   304→          { criterion: "Testing", score: 7, max: 10 },
+   305→   305→          { criterion: "Documentation", score: 8, max: 10 },
+   306→   306→        ],
+   307→   307→        complexity: 3,
+   308→   308→      },
+   309→   309→    ],
+   310→   310→  },
+   311→   311→  {
+   312→   312→    id: "stu_mayur",
+   313→   313→    name: "Mayur Patil",
+   314→   314→    roll: "TECO21187",
+   315→   315→    branch: "Information Technology",
+   316→   316→    batch: "2026",
+   317→   317→    cgpa: 8.6,
+   318→   318→    githubUser: "mayurp",
+   319→   319→    reposScanned: 11,
+   320→   320→    verificationScore: 86,
+   321→   321→    avatarColor: "#ffe2b2",
+   322→   322→    skills: [
+   323→   323→      { canonical: "Python", status: "verified", assessmentId: "as_mayur_py", githubIds: ["gh_mayur_py1"] },
+   324→   324→      { canonical: "Java", status: "verified", assessmentId: "as_mayur_java" },
+   325→   325→      { canonical: "SQL", status: "verified", assessmentId: "as_mayur_sql" },
+   326→   326→      { canonical: "React", status: "verified", githubIds: ["gh_mayur_react1"] },
+   327→   327→      { canonical: "Spring Boot", status: "verified", githubIds: ["gh_mayur_spring1"] },
+   328→   328→      { canonical: "Docker", status: "verified", assessmentId: "as_mayur_docker", githubIds: ["gh_mayur_docker1"] },
+   329→   329→      { canonical: "AWS", status: "unverified" },
+   330→   330→    ],
+   331→   331→    evidence: [
+   332→   332→      {
+   333→   333→        id: "gh_mayur_py1",
+   334→   334→        kind: "github",
+   335→   335→        skill: "Python",
+   336→   336→        repo: "ml-prep-toolkit",
+   337→   337→        filePath: "prep/vectorize.py",
+   338→   338→        line: 24,
+   339→   339→        commitSha: "11ab9c0",
+   340→   340→        commitUrl: "https://github.com/mayurp/ml-prep-toolkit/commit/11ab9c0",
+   341→   341→        snippet: "from sklearn.feature_extraction.text import TfidfVectorizer",
+   342→   342→        scannedAt: NOW - 7 * DAY,
+   343→   343→      },
+   344→   344→      {
+   345→   345→        id: "gh_mayur_react1",
+   346→   346→        kind: "github",
+   347→   347→        skill: "React",
+   348→   348→        repo: "job-board-ui",
+   349→   349→        filePath: "src/pages/Jobs.tsx",
+   350→   350→        line: 30,
+   351→   351→        commitSha: "22cd8b1",
+   352→   352→        commitUrl: "https://github.com/mayurp/job-board-ui/commit/22cd8b1",
+   353→   353→        snippet: "export default function Jobs(){ const {data} = useJobs(); return <JobList jobs={data}/> }",
+   354→   354→        scannedAt: NOW - 6 * DAY,
+   355→   355→      },
+   356→   356→      {
+   357→   357→        id: "gh_mayur_spring1",
+   358→   358→        kind: "github",
+   359→   359→        skill: "Spring Boot",
+   360→   360→        repo: "inventory-api",
+   361→   361→        filePath: "src/main/java/com/app/InventoryService.java",
+   362→   362→        line: 14,
+   363→   363→        commitSha: "33ef2a2",
+   364→   364→        commitUrl: "https://github.com/mayurp/inventory-api/commit/33ef2a2",
+   365→   365→        snippet: "@SpringBootApplication\npublic class InventoryService { ... }",
+   366→   366→        scannedAt: NOW - 5 * DAY,
+   367→   367→      },
+   368→   368→      {
+   369→   369→        id: "gh_mayur_docker1",
+   370→   370→        kind: "github",
+   371→   371→        skill: "Docker",
+   372→   372→        repo: "inventory-api",
+   373→   373→        filePath: "Dockerfile",
+   374→   374→        line: 1,
+   375→   375→        commitSha: "44aa3bc",
+   376→   376→        commitUrl: "https://github.com/mayurp/inventory-api/commit/44aa3bc",
+   377→   377→        snippet: "FROM eclipse-temurin:17-jre\nCOPY target/app.jar /app/app.jar",
+   378→   378→        scannedAt: NOW - 4 * DAY,
+   379→   379→      },
+   380→   380→      {
+   381→   381→        id: "as_mayur_py",
+   382→   382→        kind: "assessment",
+   383→   383→        skill: "Python",
+   384→   384→        score: 84,
+   385→   385→        passed: true,
+   386→   386→        warnings: 1,
+   387→   387→        takenAt: NOW - 8 * DAY,
+   388→   388→        durationSec: 600,
+   389→   389→      },
+   390→   390→      {
+   391→   391→        id: "as_mayur_java",
+   392→   392→        kind: "assessment",
+   393→   393→        skill: "Java",
+   394→   394→        score: 79,
+   395→   395→        passed: true,
+   396→   396→        warnings: 0,
+   397→   397→        takenAt: NOW - 7 * DAY,
+   398→   398→        durationSec: 560,
+   399→   399→      },
+   400→   400→      {
+   401→   401→        id: "as_mayur_sql",
+   402→   402→        kind: "assessment",
+   403→   403→        skill: "SQL",
+   404→   404→        score: 82,
+   405→   405→        passed: true,
+   406→   406→        warnings: 0,
+   407→   407→        takenAt: NOW - 6 * DAY,
+   408→   408→        durationSec: 540,
+   409→   409→      },
+   410→   410→      {
+   411→   411→        id: "as_mayur_docker",
+   412→   412→        kind: "assessment",
+   413→   413→        skill: "Docker",
+   414→   414→        score: 77,
+   415→   415→        passed: true,
+   416→   416→        warnings: 1,
+   417→   417→        takenAt: NOW - 3 * DAY,
+   418→   418→        durationSec: 600,
+   419→   419→      },
+   420→   420→    ],
+   421→   421→    assessments: [
+   422→   422→      { id: "as_mayur_py", kind: "assessment", skill: "Python", score: 84, passed: true, warnings: 1, takenAt: NOW - 8 * DAY, durationSec: 600 },
+   423→   423→      { id: "as_mayur_java", kind: "assessment", skill: "Java", score: 79, passed: true, warnings: 0, takenAt: NOW - 7 * DAY, durationSec: 560 },
+   424→   424→      { id: "as_mayur_sql", kind: "assessment", skill: "SQL", score: 82, passed: true, warnings: 0, takenAt: NOW - 6 * DAY, durationSec: 540 },
+   425→   425→      { id: "as_mayur_docker", kind: "assessment", skill: "Docker", score: 77, passed: true, warnings: 1, takenAt: NOW - 3 * DAY, durationSec: 600 },
+   426→   426→    ],
+   427→   427→    projects: [
+   428→   428→      {
+   429→   429→        id: "pr_mayur_1",
+   430→   430→        kind: "project",
+   431→   431→        skill: "Spring Boot",
+   432→   432→        title: "Inventory Management API",
+   433→   433→        repo: "inventory-api",
+   434→   434→        faculty: "Prof. A. Deshpande",
+   435→   435→        grade: "A",
+   436→   436→        rubric: [
+   437→   437→          { criterion: "Architecture", score: 8, max: 10 },
+   438→   438→          { criterion: "Code Quality", score: 8, max: 10 },
+   439→   439→          { criterion: "Testing", score: 7, max: 10 },
+   440→   440→          { criterion: "Documentation", score: 8, max: 10 },
+   441→   441→        ],
+   442→   442→        complexity: 4,
+   443→   443→      },
+   444→   444→    ],
+   445→   445→  },
+   446→   446→  {
+   447→   447→    id: "stu_prakhar",
+   448→   448→    name: "Prakhar Sharma",
+   449→   449→    roll: "TECO21201",
+   450→   450→    branch: "Computer Engineering",
+   451→   451→    batch: "2026",
+   452→   452→    cgpa: 9.1,
+   453→   453→    githubUser: "prakhar-s",
+   454→   454→    reposScanned: 18,
+   455→   455→    verificationScore: 94,
+   456→   456→    avatarColor: "#10b981",
+   457→   457→    skills: [
+   458→   458→      { canonical: "Python", status: "verified", assessmentId: "as_prakhar_py", githubIds: ["gh_prakhar_py1"] },
+   459→   459→      { canonical: "SQL", status: "verified", assessmentId: "as_prakhar_sql" },
+   460→   460→      { canonical: "React", status: "verified", githubIds: ["gh_prakhar_react1"] },
+   461→   461→      { canonical: "Node.js", status: "verified", githubIds: ["gh_prakhar_node1"] },
+   462→   462→      { canonical: "PostgreSQL", status: "verified", githubIds: ["gh_prakhar_pg1"] },
+   463→   463→      { canonical: "Docker", status: "verified", assessmentId: "as_prakhar_docker", githubIds: ["gh_prakhar_docker1"] },
+   464→   464→      { canonical: "Machine Learning", status: "verified", githubIds: ["gh_prakhar_ml1"] },
+   465→   465→      { canonical: "Redis", status: "verified", githubIds: ["gh_prakhar_redis1"] },
+   466→   466→    ],
+   467→   467→    evidence: [
+   468→   468→      {
+   469→   469→        id: "gh_prakhar_py1",
+   470→   470→        kind: "github",
+   471→   471→        skill: "Python",
+   472→   472→        repo: "rcm-engine",
+   473→   473→        filePath: "engine/recommender.py",
+   474→   474→        line: 36,
+   475→   475→        commitSha: "7af2c11",
+   476→   476→        commitUrl: "https://github.com/prakhar-s/rcm-engine/commit/7af2c11",
+   477→   477→        snippet: "import numpy as np\ndef cosine(a,b): return np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b))",
+   478→   478→        scannedAt: NOW - 4 * DAY,
+   479→   479→      },
+   480→   480→      {
+   481→   481→        id: "gh_prakhar_react1",
+   482→   482→        kind: "github",
+   483→   483→        skill: "React",
+   484→   484→        repo: "rcm-dashboard",
+   485→   485→        filePath: "src/App.tsx",
+   486→   486→        line: 22,
+   487→   487→        commitSha: "8bd3e22",
+   488→   488→        commitUrl: "https://github.com/prakhar-s/rcm-dashboard/commit/8bd3e22",
+   489→   489→        snippet: "export default function App(){ return <RecommenderView/> }",
+   490→   490→        scannedAt: NOW - 3 * DAY,
+   491→   491→      },
+   492→   492→      {
+   493→   493→        id: "gh_prakhar_node1",
+   494→   494→        kind: "github",
+   495→   495→        skill: "Node.js",
+   496→   496→        repo: "rcm-api",
+   497→   497→        filePath: "src/index.ts",
+   498→   498→        line: 10,
+   499→   499→        commitSha: "9ce4f33",
+   500→   500→        commitUrl: "https://github.com/prakhar-s/rcm-api/commit/9ce4f33",
+   501→   501→        snippet: "import Fastify from 'fastify';\nconst app = Fastify();",
+   502→   502→        scannedAt: NOW - 3 * DAY,
+   503→   503→      },
+   504→   504→      {
+   505→   505→        id: "gh_prakhar_pg1",
+   506→   506→        kind: "github",
+   507→   507→        skill: "PostgreSQL",
+   508→   508→        repo: "rcm-api",
+   509→   509→        filePath: "src/db.ts",
+   510→   510→        line: 4,
+   511→   511→        commitSha: "0df5a44",
+   512→   512→        commitUrl: "https://github.com/prakhar-s/rcm-api/commit/0df5a44",
+   513→   513→        snippet: "import pg from 'pg';\nexport const pool = new pg.Pool();",
+   514→   514→        scannedAt: NOW - 3 * DAY,
+   515→   515→      },
+   516→   516→      {
+   517→   517→        id: "gh_prakhar_docker1",
+   518→   518→        kind: "github",
+   519→   519→        skill: "Docker",
+   520→   520→        repo: "rcm-api",
+   521→   521→        filePath: "Dockerfile",
+   522→   522→        line: 1,
+   523→   523→        commitSha: "1e6b7c5",
+   524→   524→        commitUrl: "https://github.com/prakhar-s/rcm-api/commit/1e6b7c5",
+   525→   525→        snippet: "FROM node:20-alpine\nWORKDIR /app\nCOPY . .",
+   526→   526→        scannedAt: NOW - 2 * DAY,
+   527→   527→      },
+   528→   528→      {
+   529→   529→        id: "gh_prakhar_ml1",
+   530→   530→        kind: "github",
+   531→   531→        skill: "Machine Learning",
+   532→   532→        repo: "rcm-engine",
+   533→   533→        filePath: "engine/train.py",
+   534→   534→        line: 50,
+   535→   535→        commitSha: "2f7c8d6",
+   536→   536→        commitUrl: "https://github.com/prakhar-s/rcm-engine/commit/2f7c8d6",
+   537→   537→        snippet: "from sklearn.ensemble import RandomForestClassifier",
+   538→   538→        scannedAt: NOW - 4 * DAY,
+   539→   539→      },
+   540→   540→      {
+   541→   541→        id: "gh_prakhar_redis1",
+   542→   542→        kind: "github",
+   543→   543→        skill: "Redis",
+   544→   544→        repo: "rcm-api",
+   545→   545→        filePath: "src/cache.ts",
+   546→   546→        line: 8,
+   547→   547→        commitSha: "3a8d9e7",
+   548→   548→        commitUrl: "https://github.com/prakhar-s/rcm-api/commit/3a8d9e7",
+   549→   549→        snippet: "import Redis from 'ioredis';\nexport const cache = new Redis();",
+   550→   550→        scannedAt: NOW - 2 * DAY,
+   551→   551→      },
+   552→   552→      {
+   553→   553→        id: "as_prakhar_py",
+   554→   554→        kind: "assessment",
+   555→   555→        skill: "Python",
+   556→   556→        score: 96,
+   557→   557→        passed: true,
+   558→   558→        warnings: 0,
+   559→   559→        takenAt: NOW - 5 * DAY,
+   560→   560→        durationSec: 460,
+   561→   561→      },
+   562→   562→      {
+   563→   563→        id: "as_prakhar_sql",
+   564→   564→        kind: "assessment",
+   565→   565→        skill: "SQL",
+   566→   566→        score: 93,
+   567→   567→        passed: true,
+   568→   568→        warnings: 0,
+   569→   569→        takenAt: NOW - 4 * DAY,
+   570→   570→        durationSec: 470,
+   571→   571→      },
+   572→   572→      {
+   573→   573→        id: "as_prakhar_docker",
+   574→   574→        kind: "assessment",
+   575→   575→        skill: "Docker",
+   576→   576→        score: 88,
+   577→   577→        passed: true,
+   578→   578→        warnings: 0,
+   579→   579→        takenAt: NOW - 2 * DAY,
+   580→   580→        durationSec: 510,
+   581→   581→      },
+   582→   582→    ],
+   583→   583→    assessments: [
+   584→   584→      { id: "as_prakhar_py", kind: "assessment", skill: "Python", score: 96, passed: true, warnings: 0, takenAt: NOW - 5 * DAY, durationSec: 460 },
+   585→   585→      { id: "as_prakhar_sql", kind: "assessment", skill: "SQL", score: 93, passed: true, warnings: 0, takenAt: NOW - 4 * DAY, durationSec: 470 },
+   586→   586→      { id: "as_prakhar_docker", kind: "assessment", skill: "Docker", score: 88, passed: true, warnings: 0, takenAt: NOW - 2 * DAY, durationSec: 510 },
+   587→   587→    ],
+   588→   588→    projects: [
+   589→   589→      {
+   590→   590→        id: "pr_prakhar_1",
+   591→   591→        kind: "project",
+   592→   592→        skill: "Machine Learning",
+   593→   593→        title: "Recommendation Engine",
+   594→   594→        repo: "rcm-engine",
+   595→   595→        faculty: "Prof. M. Nair",
+   596→   596→        grade: "A+",
+   597→   597→        rubric: [
+   598→   598→          { criterion: "Architecture", score: 10, max: 10 },
+   599→   599→          { criterion: "Code Quality", score: 9, max: 10 },
+   600→   600→          { criterion: "Testing", score: 9, max: 10 },
+   601→   601→          { criterion: "Documentation", score: 10, max: 10 },
+   602→   602→        ],
+   603→   603→        complexity: 5,
+   604→   604→      },
+   605→   605→      {
+   606→   606→        id: "pr_prakhar_2",
+   607→   607→        kind: "project",
+   608→   608→        skill: "Node.js",
+   609→   609→        title: "RCM API Gateway",
+   610→   610→        repo: "rcm-api",
+   611→   611→        faculty: "Prof. S. Iyer",
+   612→   612→        grade: "A+",
+   613→   613→        rubric: [
+   614→   614→          { criterion: "Architecture", score: 9, max: 10 },
+   615→   615→          { criterion: "Code Quality", score: 9, max: 10 },
+   616→   616→          { criterion: "Testing", score: 9, max: 10 },
+   617→   617→          { criterion: "Documentation", score: 9, max: 10 },
+   618→   618→        ],
+   619→   619→        complexity: 4,
+   620→   620→      },
+   621→   621→    ],
+   622→   622→  },
+   623→   623→  {
+   624→   624→    id: "stu_viraj",
+   625→   625→    name: "Viraj Kulkarni",
+   626→   626→    roll: "TECO21077",
+   627→   627→    branch: "Computer Engineering",
+   628→   628→    batch: "2026",
+   629→   629→    cgpa: 8.2,
+   630→   630→    githubUser: "virajk",
+   631→   631→    reposScanned: 9,
+   632→   632→    verificationScore: 78,
+   633→   633→    avatarColor: "#9fe0ff",
+   634→   634→    skills: [
+   635→   635→      { canonical: "JavaScript", status: "verified", githubIds: ["gh_viraj_js1"] },
+   636→   636→      { canonical: "React", status: "verified", githubIds: ["gh_viraj_react1"] },
+   637→   637→      { canonical: "Node.js", status: "verified", githubIds: ["gh_viraj_node1"] },
+   638→   638→      { canonical: "MongoDB", status: "verified", githubIds: ["gh_viraj_mongo1"] },
+   639→   639→      { canonical: "Python", status: "unverified" },
+   640→   640→      { canonical: "AWS", status: "unverified" },
+   641→   641→      { canonical: "Docker", status: "unverified" },
+   642→   642→    ],
+   643→   643→    evidence: [
+   644→   644→      {
+   645→   645→        id: "gh_viraj_js1",
+   646→   646→        kind: "github",
+   647→   647→        skill: "JavaScript",
+   648→   648→        repo: "portfolio-site",
+   649→   649→        filePath: "src/main.js",
+   650→   650→        line: 12,
+   651→   651→        commitSha: "ab12cd3",
+   652→   652→        commitUrl: "https://github.com/virajk/portfolio-site/commit/ab12cd3",
+   653→   653→        snippet: "const nav = document.querySelector('.nav');",
+   654→   654→        scannedAt: NOW - 10 * DAY,
+   655→   655→      },
+   656→   656→      {
+   657→   657→        id: "gh_viraj_react1",
+   658→   658→        kind: "github",
+   659→   659→        skill: "React",
+   660→   660→        repo: "expense-tracker",
+   661→   661→        filePath: "src/App.jsx",
+   662→   662→        line: 8,
+   663→   663→        commitSha: "bc34de5",
+   664→   664→        commitUrl: "https://github.com/virajk/expense-tracker/commit/bc34de5",
+   665→   665→        snippet: "import { useState } from 'react';",
+   666→   666→        scannedAt: NOW - 8 * DAY,
+   667→   667→      },
+   668→   668→      {
+   669→   669→        id: "gh_viraj_node1",
+   670→   670→        kind: "github",
+   671→   671→        skill: "Node.js",
+   672→   672→        repo: "expense-api",
+   673→   673→        filePath: "src/index.js",
+   674→   674→        line: 6,
+   675→   675→        commitSha: "cd56ef6",
+   676→   676→        commitUrl: "https://github.com/virajk/expense-api/commit/cd56ef6",
+   677→   677→        snippet: "const express = require('express');",
+   678→   678→        scannedAt: NOW - 7 * DAY,
+   679→   679→      },
+   680→   680→      {
+   681→   681→        id: "gh_viraj_mongo1",
+   682→   682→        kind: "github",
+   683→   683→        skill: "MongoDB",
+   684→   684→        repo: "expense-api",
+   685→   685→        filePath: "src/db.js",
+   686→   686→        line: 4,
+   687→   687→        commitSha: "de67ab7",
+   688→   688→        commitUrl: "https://github.com/virajk/expense-api/commit/de67ab7",
+   689→   689→        snippet: "const { MongoClient } = require('mongodb');",
+   690→   690→        scannedAt: NOW - 7 * DAY,
+   691→   691→      },
+   692→   692→    ],
+   693→   693→    assessments: [],
+   694→   694→    projects: [
+   695→   695→      {
+   696→   696→        id: "pr_viraj_1",
+   697→   697→        kind: "project",
+   698→   698→        skill: "React",
+   699→   699→        title: "Expense Tracker",
+   700→   700→        repo: "expense-tracker",
+   701→   701→        faculty: "Prof. R. Kulkarni",
+   702→   702→        grade: "B+",
+   703→   703→        rubric: [
+   704→   704→          { criterion: "Architecture", score: 7, max: 10 },
+   705→   705→          { criterion: "Code Quality", score: 7, max: 10 },
+   706→   706→          { criterion: "Testing", score: 5, max: 10 },
+   707→   707→          { criterion: "Documentation", score: 6, max: 10 },
+   708→   708→        ],
+   709→   709→        complexity: 2,
+   710→   710→      },
+   711→   711→    ],
+   712→   712→  },
+   713→   713→];
+   714→   714→
+   715→   715→// ---------------------------------------------------------------------------
+   716→   716→// JOBS
+   717→   717→// ---------------------------------------------------------------------------
+   718→   718→
+   719→   719→export const JOBS: JobOpening[] = [
+   720→   720→  {
+   721→   721→    id: "job_finnable",
+   722→   722→    company: "Finnable Credit",
+   723→   723→    role: "Backend Engineer",
+   724→   724→    location: "Pune, India",
+   725→   725→    ctc: "12 LPA",
+   726→   726→    eligibility: "BE/BTech 2026, CGPA >= 7.5",
+   727→   727→    requiredSkills: ["Node.js", "PostgreSQL", "Redis"],
+   728→   728→    preferredSkills: ["Docker", "AWS"],
+   729→   729→    description:
+   730→   730→      "Design and scale Node.js microservices with PostgreSQL and Redis caching for our lending platform.",
+   731→   731→    sources: ["Partner Portal", "Alumni Referral", "WhatsApp Forward"],
+   732→   732→    postedAt: NOW - 2 * DAY,
+   733→   733→    alumniCount: 3,
+   734→   734→  },
+   735→   735→  {
+   736→   736→    id: "job_novos",
+   737→   737→    company: "Novos Labs",
+   738→   738→    role: "Full Stack Engineer",
+   739→   739→    location: "Remote (India)",
+   740→   740→    ctc: "14 LPA",
+   741→   741→    eligibility: "BE/BTech 2026, CGPA >= 8.0",
+   742→   742→    requiredSkills: ["React", "Node.js", "PostgreSQL"],
+   743→   743→    preferredSkills: ["Docker", "TypeScript"],
+   744→   744→    description:
+   745→   745→      "Build a React + Node.js analytics dashboard backed by PostgreSQL with Dockerized deployments.",
+   746→   746→    sources: ["Partner Portal"],
+   747→   747→    postedAt: NOW - 3 * DAY,
+   748→   748→    alumniCount: 1,
+   749→   749→  },
+   750→   750→  {
+   751→   751→    id: "job_atlas",
+   752→   752→    company: "Atlas AI",
+   753→   753→    role: "Machine Learning Engineer",
+   754→   754→    location: "Bengaluru, India",
+   755→   755→    ctc: "18 LPA",
+   756→   756→    eligibility: "BE/BTech 2026, CGPA >= 8.5",
+   757→   757→    requiredSkills: ["Python", "Machine Learning", "SQL"],
+   758→   758→    preferredSkills: ["Docker", "TensorFlow", "PostgreSQL"],
+   759→   759→    description:
+   760→   760→      "Train and deploy ML models in production; ship a recommendation engine with Python & SQL pipelines.",
+   761→   761→    sources: ["Alumni Referral"],
+   762→   762→    postedAt: NOW - 1 * DAY,
+   763→   763→    alumniCount: 2,
+   764→   764→  },
+   765→   765→  {
+   766→   766→    id: "job_helios",
+   767→   767→    company: "Helios Systems",
+   768→   768→    role: "DevOps Engineer",
+   769→   769→    location: "Hyderabad, India",
+   770→   770→    ctc: "11 LPA",
+   771→   771→    eligibility: "BE/BTech 2026, CGPA >= 7.0",
+   772→   772→    requiredSkills: ["Docker", "AWS", "Linux"],
+   773→   773→    preferredSkills: ["Kubernetes", "CI/CD"],
+   774→   774→    description:
+   775→   775→      "Own CI/CD pipelines, containerize services with Docker, and manage AWS infrastructure.",
+   776→   776→    sources: ["WhatsApp Forward"],
+   777→   777→    postedAt: NOW - 4 * DAY,
+   778→   778→    alumniCount: 0,
+   779→   779→  },
+   780→   780→];
+   781→   781→
+   782→   782→// ---------------------------------------------------------------------------
+   783→   783→// APPLICATIONS (shared Kanban)
+   784→   784→// ---------------------------------------------------------------------------
+   785→   785→
+   786→   786→export const APPLICATIONS: Application[] = [
+   787→   787→  { id: "app_1", studentId: "stu_om", jobId: "job_finnable", stage: "Assessment", appliedAt: NOW - 2 * DAY, fitScore: 88 },
+   788→   788→  { id: "app_2", studentId: "stu_mayur", jobId: "job_finnable", stage: "Shortlisted", appliedAt: NOW - 2 * DAY, fitScore: 72 },
+   789→   789→  { id: "app_3", studentId: "stu_prakhar", jobId: "job_finnable", stage: "Technical Interview", appliedAt: NOW - 2 * DAY, fitScore: 96 },
+   790→   790→  { id: "app_4", studentId: "stu_om", jobId: "job_novos", stage: "Applied", appliedAt: NOW - 1 * DAY, fitScore: 81 },
+   791→   791→  { id: "app_5", studentId: "stu_prakhar", jobId: "job_atlas", stage: "HR Interview", appliedAt: NOW - 1 * DAY, fitScore: 99 },
+   792→   792→  { id: "app_6", studentId: "stu_mayur", jobId: "job_helios", stage: "Applied", appliedAt: NOW - 3 * DAY, fitScore: 64 },
+   793→   793→];
+   794→   794→
+   795→   795→// ---------------------------------------------------------------------------
+   796→   796→// INTERVIEW QUESTIONS (crowdsourced)
+   797→   797→// ---------------------------------------------------------------------------
+   798→   798→
+   799→   799→export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
+   800→   800→  {
+   801→   801→    id: "iq_1",
+   802→   802→    company: "Finnable Credit",
+   803→   803→    role: "Backend Engineer",
+   804→   804→    question: "Explain how Redis pub/sub differs from a message queue like RabbitMQ.",
+   805→   805→    category: "Databases",
+   806→   806→    difficulty: "Medium",
+   807→   807→    reportedBy: "Om Deshmukh",
+   808→   808→    reportedAt: NOW - 6 * DAY,
+   809→   809→  },
+   810→   810→  {
+   811→   811→    id: "iq_2",
+   812→   812→    company: "Finnable Credit",
+   813→   813→    role: "Backend Engineer",
+   814→   814→    question: "Design a URL shortener with read-heavy traffic and cache invalidation.",
+   815→   815→    category: "System Design",
+   816→   816→    difficulty: "Hard",
+   817→   817→    reportedBy: "Prakhar Sharma",
+   818→   818→    reportedAt: NOW - 5 * DAY,
+   819→   819→  },
+   820→   820→  {
+   821→   821→    id: "iq_3",
+   822→   822→    company: "Atlas AI",
+   823→   823→    role: "ML Engineer",
+   824→   824→    question: "How would you handle class imbalance in a fraud detection model?",
+   825→   825→    category: "Machine Learning",
+   826→   826→    difficulty: "Medium",
+   827→   827→    reportedBy: "Prakhar Sharma",
+   828→   828→    reportedAt: NOW - 3 * DAY,
+   829→   829→  },
+   830→   830→  {
+   831→   831→    id: "iq_4",
+   832→   832→    company: "Novos Labs",
+   833→   833→    role: "Full Stack Engineer",
+   834→   834→    question: "Walk through the React reconciliation algorithm and why keys matter.",
+   835→   835→    category: "Frontend",
+   836→   836→    difficulty: "Medium",
+   837→   837→    reportedBy: "Om Deshmukh",
+   838→   838→    reportedAt: NOW - 2 * DAY,
+   839→   839→  },
+   840→   840→];
+   841→   841→
+   842→   842→// Sample inflated resume for the "BS Detector" demo
+   843→   843→export const SAMPLE_INFLATED_RESUME = `OM DESHMUKH
+   844→   844→Computer Engineering, 2026 | CGPA 8.9
+   845→   845→
+   846→   846→EXPERIENCE & PROJECTS
+   847→   847→- Built REST APIs using Node.js and PostgreSQL for an auth service.
+   848→   848→- Architected Kubernetes & Redis microservices for a global payments platform.
+   849→   849→- Led AWS EKS deployment serving 10M requests/sec with zero downtime.
+   850→   850→- Implemented distributed tracing with OpenTelemetry across 40 services.
+   851→   851→- Designed a Cassandra cluster with multi-region replication.
+   852→   852→
+   853→   853→SKILLS
+   854→   854→Node.js, PostgreSQL, React, Python, Kubernetes, Redis, AWS, Cassandra, Kafka, GraphQL, gRPC, Terraform, Rust, GoLang.`;
+   855→   855→
