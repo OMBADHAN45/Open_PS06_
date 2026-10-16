@@ -435,36 +435,35 @@ ${resume.bullets.map((b) => `<li>${b.text}<span class="badge">🔗 Proof Verifie
             {verifiedSkillsList.map((sk) => {
               const on = includedSkills.has(sk.canonical);
               return (
-                <label
+                <div
                   key={sk.canonical}
-                  className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2 transition ${
+                  className={`flex items-center justify-between gap-2.5 rounded-lg border px-3 py-2 transition ${
                     on
                       ? "border-emerald-500/40 bg-emerald-500/8"
                       : "border-white/10 bg-white/[0.02] opacity-60"
                   }`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={on}
-                    onChange={() => toggleSkill(sk.canonical)}
-                    className="accent-emerald-400"
-                  />
-                  <CheckCircle2
-                    className={`h-3 w-3 ${on ? "text-emerald-400" : "text-white/20"}`}
-                  />
-                  <span className={`text-[12px] font-medium ${on ? "text-white" : "text-[var(--drishti-sub)]"}`}>
-                    {sk.canonical}
-                  </span>
+                  <label className="flex flex-1 cursor-pointer items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={on}
+                      onChange={() => toggleSkill(sk.canonical)}
+                      className="accent-emerald-400"
+                    />
+                    <CheckCircle2
+                      className={`h-3 w-3 ${on ? "text-emerald-400" : "text-white/20"}`}
+                    />
+                    <span className={`text-[12px] font-medium ${on ? "text-white" : "text-[var(--drishti-sub)]"}`}>
+                      {sk.canonical}
+                    </span>
+                  </label>
                   {on && (
                     <ProofBadge
                       label="Proof"
-                      onClick={(e) => {
-                        (e as React.MouseEvent).stopPropagation();
-                        openProof(student.id, sk.canonical);
-                      }}
+                      onClick={() => openProof(student.id, sk.canonical)}
                     />
                   )}
-                </label>
+                </div>
               );
             })}
           </div>

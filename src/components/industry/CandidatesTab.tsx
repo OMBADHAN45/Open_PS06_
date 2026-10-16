@@ -7,8 +7,7 @@ import { AvatarCircle, FitScoreBadge } from "@/components/shared/primitives";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   Select,
   SelectContent,
@@ -43,6 +42,7 @@ import {
   ArrowRight,
   GitCompareArrows,
   X,
+  Check,
   CheckCircle2,
   XCircle,
   ShieldCheck,
@@ -223,15 +223,26 @@ export function CandidatesTab() {
                 const active = filters[f.key];
                 return (
                   <button
+                    type="button"
                     key={f.key}
                     onClick={() => setFilters((p) => ({ ...p, [f.key]: !p[f.key] }))}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition ${
+                    aria-pressed={active}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition cursor-pointer ${
                       active
                         ? "border-[var(--drishti-blue)]/50 bg-[var(--drishti-blue)]/15 text-[var(--drishti-blue)]"
                         : "border-white/10 bg-white/[0.02] text-[var(--drishti-sub)] hover:border-white/20 hover:text-white"
                     }`}
                   >
-                    <Checkbox checked={active} className="pointer-events-none h-3 w-3" />
+                    <span
+                      aria-hidden="true"
+                      className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
+                        active
+                          ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)] text-[#06101f]"
+                          : "border-white/30 bg-black/40"
+                      }`}
+                    >
+                      {active && <Check className="h-2.5 w-2.5 stroke-[3]" />}
+                    </span>
                     {f.icon}
                     {f.label}
                   </button>
@@ -357,19 +368,28 @@ export function CandidatesTab() {
                             Inspect
                             <ArrowRight className="h-3 w-3" />
                           </Button>
-                          <label
-                            className={`flex h-8 cursor-pointer items-center gap-1 rounded-md border px-2 text-[11px] font-medium transition ${
+                          <button
+                            type="button"
+                            onClick={() => toggleCompare(row.student.id)}
+                            aria-pressed={isCompared}
+                            className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-md border px-2 text-[11px] font-medium transition select-none ${
                               isCompared
                                 ? "border-[var(--drishti-blue)]/50 bg-[var(--drishti-blue)]/15 text-[var(--drishti-blue)]"
                                 : "border-white/15 bg-white/[0.02] text-[var(--drishti-sub)] hover:text-white"
                             }`}
                           >
-                            <Checkbox
-                              checked={isCompared}
-                              onCheckedChange={() => toggleCompare(row.student.id)}
-                            />
+                            <span
+                              aria-hidden="true"
+                              className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
+                                isCompared
+                                  ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)] text-[#06101f]"
+                                  : "border-white/30 bg-black/40"
+                              }`}
+                            >
+                              {isCompared && <Check className="h-2.5 w-2.5 stroke-[3]" />}
+                            </span>
                             Compare
-                          </label>
+                          </button>
                         </div>
                       </TableCell>
                     </TableRow>
