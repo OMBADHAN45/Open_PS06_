@@ -1,10 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppStore, type View } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { GraduationCap, Building2, Landmark, ChevronsUpDown, Home } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  GraduationCap,
+  Building2,
+  Landmark,
+  ChevronsUpDown,
+  Home,
+  Search,
+  Sparkles,
+  HelpCircle,
+} from "lucide-react";
+import { PlatformTourModal } from "@/components/shared/PlatformTourModal";
 
 const ROLES: { view: View; label: string; icon: React.ReactNode; accent: string }[] = [
   { view: "student", label: "Student Portal", icon: <GraduationCap className="h-4 w-4" />, accent: "var(--drishti-blue)" },
@@ -60,28 +77,79 @@ export function PortalHeader({
   right?: React.ReactNode;
 }) {
   const setView = useAppStore((s) => s.setView);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "?" && !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        setTourOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
+  const openSearch = () => {
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }));
+  };
+
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-white/10 bg-[#02060f]/85 px-4 py-3 backdrop-blur-xl md:px-6">
-      <div className="flex items-center gap-3">
-        <button onClick={() => setView("landing")} className="flex items-center gap-2" aria-label="DRISHTI home">
-          <svg viewBox="0 0 23 17" className="h-4 w-5" fill="none">
-            <path d="M2 1 L9 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
-            <path d="M8 1 L15 16" stroke="#9fe0ff" strokeWidth="2.2" strokeLinecap="round" />
-            <path d="M14 1 L21 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
-          </svg>
-          <span className="text-[13px] font-bold tracking-[0.2em] text-white">DRISHTI</span>
-        </button>
-        <div className="hidden h-5 w-px bg-white/10 sm:block" />
-        <div>
-          <div className="text-[14px] font-semibold text-white">{title}</div>
-          {subtitle && <div className="text-[11px] text-[var(--drishti-sub)]">{subtitle}</div>}
+    <>
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-white/10 bg-[#02060f]/85 px-4 py-3 backdrop-blur-xl md:px-6">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setView("landing")} className="flex items-center gap-2" aria-label="DRISHTI home">
+            <svg viewBox="0 0 23 17" className="h-4 w-5" fill="none">
+              <path d="M2 1 L9 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
+              <path d="M8 1 L15 16" stroke="#9fe0ff" strokeWidth="2.2" strokeLinecap="round" />
+              <path d="M14 1 L21 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
+            </svg>
+            <span className="text-[13px] font-bold tracking-[0.2em] text-white">DRISHTI</span>
+          </button>
+          <div className="hidden h-5 w-px bg-white/10 sm:block" />
+          <div>
+            <div className="text-[14px] font-semibold text-white">{title}</div>
+            {subtitle && <div className="text-[11px] text-[var(--drishti-sub)]">{subtitle}</div>}
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
-        {right}
-        <RoleSwitcher />
-      </div>
-    </header>
+
+        {/* Center Quick Search Button */}
+        <button
+          onClick={openSearch}
+          className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-[var(--drishti-sub)] transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+        >
+          <Search className="h-3 w-3 text-white/50" />
+          <span>Search candidates, jobs, commands...</span>
+          <kbd className="rounded border border-white/15 bg-black/40 px-1.5 py-0.5 text-[9px] font-mono text-white/60">
+            Ctrl+K
+          </kbd>
+        </button>
+
+        <div className="flex items-center gap-2">
+          {/* Live Ledger Status chip */}
+          <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2.5 py-1 text-[11px] text-emerald-400 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Ledger Sync: Live
+          </span>
+
+          {/* Quick Guide modal button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setTourOpen(true)}
+            className="hidden sm:inline-flex gap-1.5 text-[11px] text-[var(--drishti-gold)] hover:bg-[var(--drishti-gold)]/10 hover:text-[var(--drishti-gold)] border border-[var(--drishti-gold)]/20"
+          >
+            <Sparkles className="h-3 w-3" />
+            Platform Tour
+          </Button>
+
+          {right}
+          <RoleSwitcher />
+        </div>
+      </header>
+
+      <PlatformTourModal open={tourOpen} onOpenChange={setTourOpen} />
+    </>
   );
 }
 

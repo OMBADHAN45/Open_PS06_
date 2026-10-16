@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useAppStore, type View } from "@/lib/store";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, X, GraduationCap, Building2, Landmark, ShieldCheck, FileText, Eye, Workflow } from "lucide-react";
+import { ChevronRight, X, GraduationCap, Building2, Landmark, ShieldCheck, FileText, Eye, Workflow, Sparkles, Search } from "lucide-react";
+import { PlatformTourModal } from "@/components/shared/PlatformTourModal";
 
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104303_0c6d60b2-9353-408e-9449-585108a22fb5.mp4";
@@ -21,6 +22,7 @@ const NAV_LINKS: { label: string; view: View }[] = [
 export function LandingPage() {
   const setView = useAppStore((s) => s.setView);
   const [roleModal, setRoleModal] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
 
   const go = (v: View) => {
     setRoleModal(false);
@@ -77,10 +79,28 @@ export function LandingPage() {
               Log in / Portal Access
             </button>
           </div>
-          <button onClick={() => setRoleModal(true)} className="cta-glass text-sm">
-            Enter Platform
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
+              className="hidden lg:flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-[var(--drishti-sub)] hover:text-white hover:bg-white/10 transition"
+              title="Search commands, jobs, candidates (Ctrl+K)"
+            >
+              <Search className="h-3 w-3 text-white/50" />
+              <span>Search</span>
+              <kbd className="rounded border border-white/15 px-1 py-0.2 text-[9px] font-mono">Ctrl+K</kbd>
+            </button>
+            <button
+              onClick={() => setTourOpen(true)}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[var(--drishti-gold)]/30 bg-[var(--drishti-gold)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--drishti-gold)] hover:bg-[var(--drishti-gold)]/20 transition"
+            >
+              <Sparkles className="h-3 w-3" />
+              Quick Tour
+            </button>
+            <button onClick={() => setRoleModal(true)} className="cta-glass text-sm">
+              Enter Platform
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </nav>
       </header>
 
@@ -199,6 +219,7 @@ export function LandingPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      <PlatformTourModal open={tourOpen} onOpenChange={setTourOpen} />
     </div>
   );
 }

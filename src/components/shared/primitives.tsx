@@ -65,7 +65,7 @@ export function ProofDrawer() {
   const { open, studentId, skill } = useAppStore((s) => s.proofDrawer);
   const students = useAppStore((s) => s.students);
   const closeProof = useAppStore((s) => s.closeProof);
-  const student = students.find((s) => s.id === studentId);
+  const student = students.find((s) => s.id === studentId) ?? students[0];
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && closeProof()}>

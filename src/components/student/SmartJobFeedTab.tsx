@@ -14,7 +14,7 @@ export function SmartJobFeedTab() {
   const applyToJob = useAppStore((s) => s.applyToJob);
   const setView = useAppStore((s) => s.setView);
   const setResumeTarget = useAppStore((s) => s.setResumeTargetJob);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
   const [selectedId, setSelectedId] = useState<string>(jobs[0]?.id ?? "");
 
   const ranked = useMemo(() => {

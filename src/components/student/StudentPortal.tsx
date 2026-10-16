@@ -20,7 +20,7 @@ export function StudentPortal() {
   const activeStudentId = useAppStore((s) => s.activeStudentId);
   const setActiveStudent = useAppStore((s) => s.setActiveStudent);
   const students = useAppStore((s) => s.students);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
 
   // listen for goto-tab events from other tabs
   useEffect(() => {

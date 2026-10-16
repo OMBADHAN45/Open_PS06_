@@ -29,7 +29,7 @@ function KanbanBoard() {
   const students = useAppStore((s) => s.students);
   const applications = useAppStore((s) => s.applications);
   const jobs = useAppStore((s) => s.jobs);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
 
   const myApps = applications.filter((a) => a.studentId === activeStudentId);
 
@@ -101,7 +101,7 @@ function PrepBank() {
   const students = useAppStore((s) => s.students);
   const addQ = useAppStore((s) => s.addInterviewQuestion);
   const activeStudentId = useAppStore((s) => s.activeStudentId);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [question, setQuestion] = useState("");

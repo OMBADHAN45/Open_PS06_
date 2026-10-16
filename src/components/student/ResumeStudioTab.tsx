@@ -80,7 +80,7 @@ function AtsGenerator() {
   const resumeTargetJobId = useAppStore((s) => s.resumeTargetJobId);
   const openProof = useAppStore((s) => s.openProof);
 
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
   const [targetId, setTargetId] = useState<string>(
     resumeTargetJobId ?? jobs[0]?.id ?? ""
   );
@@ -749,7 +749,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 function BsDetector() {
   const activeStudentId = useAppStore((s) => s.activeStudentId);
   const students = useAppStore((s) => s.students);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
   const [resumeText, setResumeText] = useState("");
   const [audited, setAudited] = useState<null | {
     verified: { claim: string; evId: string; skill: string; proofUrl?: string }[];

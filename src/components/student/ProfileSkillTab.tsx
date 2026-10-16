@@ -29,7 +29,7 @@ export function ProfileSkillTab() {
   const students = useAppStore((s) => s.students);
   const toggleSkill = useAppStore((s) => s.toggleStudentSkill);
   const syncGitHub = useAppStore((s) => s.syncGitHub);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
   const [syncing, setSyncing] = useState(false);
   const [scanLog, setScanLog] = useState<string[]>([]);
 
@@ -51,6 +51,7 @@ export function ProfileSkillTab() {
   if (!student) return null;
 
   const handleSync = () => {
+    if (syncing) return;
     setSyncing(true);
     setScanLog([]);
     let i = 0;
@@ -61,9 +62,13 @@ export function ProfileSkillTab() {
         setSyncing(false);
         return;
       }
-      setScanLog((l) => [...l, `✓ Scanned ${SCAN_FILES[i].name} — detected: ${SCAN_FILES[i].found}`]);
+      const item = SCAN_FILES[i];
+      if (item && item.name) {
+        const line = `✓ Scanned ${item.name} — detected: ${item.found}`;
+        setScanLog((l) => [...l, line]);
+      }
       i++;
-    }, 500);
+    }, 450);
   };
 
   const verifiedSkills = student.skills.filter((s) => s.status === "verified");

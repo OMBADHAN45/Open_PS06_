@@ -53,7 +53,7 @@ export function ProctoringTab() {
   const students = useAppStore((s) => s.students);
   const recordSession = useAppStore((s) => s.recordProctorSession);
   const applyResult = useAppStore((s) => s.applyAssessmentResult);
-  const student = students.find((s) => s.id === activeStudentId);
+  const student = students.find((s) => s.id === activeStudentId) ?? students[0];
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [skill, setSkill] = useState<string>("");

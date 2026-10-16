@@ -10,6 +10,7 @@ const StudentPortal = dynamic(() => import("@/components/student/StudentPortal")
 const IndustryPortal = dynamic(() => import("@/components/industry/IndustryPortal").then((m) => m.IndustryPortal), { ssr: false });
 const TpoPortal = dynamic(() => import("@/components/tpo/TpoPortal").then((m) => m.TpoPortal), { ssr: false });
 const ProofDrawer = dynamic(() => import("@/components/shared/primitives").then((m) => m.ProofDrawer), { ssr: false });
+const CommandPalette = dynamic(() => import("@/components/shared/CommandPalette").then((m) => m.CommandPalette), { ssr: false });
 
 export default function Home() {
   const view = useAppStore((s) => s.view);
@@ -32,6 +33,7 @@ export default function Home() {
       {view === "industry" && <IndustryPortal />}
       {view === "tpo" && <TpoPortal />}
       <ProofDrawer />
+      <CommandPalette />
     </>
   );
 }
