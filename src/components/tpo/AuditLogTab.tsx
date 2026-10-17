@@ -36,9 +36,9 @@ interface AuditEvent {
 }
 
 const SEVERITY_STYLE: Record<Severity, { color: string; bg: string; border: string; label: string }> = {
-  violation: { color: "#ef4444", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.35)", label: "Violation" },
-  warning: { color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.35)", label: "Warning" },
-  info: { color: "#9fe0ff", bg: "rgba(159,224,255,0.08)", border: "rgba(159,224,255,0.35)", label: "Info" },
+  violation: { color: "#b91c1c", bg: "#fef2f2", border: "#fecaca", label: "Violation" },
+  warning: { color: "#b45309", bg: "#fffbeb", border: "#fde68a", label: "Warning" },
+  info: { color: "#0369a1", bg: "#f0f9ff", border: "#bae6fd", label: "Info" },
 };
 
 const EVENT_ICON: Record<EventType, React.ReactNode> = {
@@ -125,45 +125,45 @@ export function AuditLogTab() {
   return (
     <div className="space-y-5">
       {/* Summary + filter */}
-      <div className="drishti-card rounded-2xl p-4">
+      <div className="drishti-card rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#ef4444]/10 text-[#ef4444]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-600">
               <ScrollText className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-[14px] font-semibold text-white">Audit Log & Violations</h3>
-              <p className="text-[11px] text-[var(--drishti-sub)]">
+              <h3 className="text-[14px] font-semibold text-slate-900">Audit Log & Violations</h3>
+              <p className="text-[11px] text-slate-500">
                 {events.length} events across the institution · {counts.violation} violations · {counts.warning} warnings
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
-            <Filter className="mr-1 h-3.5 w-3.5 text-[var(--drishti-sub)]" />
-            <FilterChip active={filter === "all"} onClick={() => setFilter("all")} label="All" color="#a2a9b8" count={events.length} />
+            <Filter className="mr-1 h-3.5 w-3.5 text-slate-400" />
+            <FilterChip active={filter === "all"} onClick={() => setFilter("all")} label="All" color="#64748b" count={events.length} />
             <FilterChip active={filter === "violation"} onClick={() => setFilter("violation")} label="Violations" color="#ef4444" count={counts.violation} />
             <FilterChip active={filter === "warning"} onClick={() => setFilter("warning")} label="Warnings" color="#f59e0b" count={counts.warning} />
-            <FilterChip active={filter === "info"} onClick={() => setFilter("info")} label="Info" color="#9fe0ff" count={counts.info} />
+            <FilterChip active={filter === "info"} onClick={() => setFilter("info")} label="Info" color="#0ea5e9" count={counts.info} />
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="drishti-card rounded-2xl p-4">
+      <div className="drishti-card rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <Table>
           <TableHeader>
-            <TableRow className="border-white/10">
-              <TableHead className="w-[180px] text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Student</TableHead>
-              <TableHead className="w-[170px] text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Event Type</TableHead>
-              <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Message</TableHead>
-              <TableHead className="w-[110px] text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Severity</TableHead>
-              <TableHead className="w-[150px] text-right text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Timestamp</TableHead>
+            <TableRow className="border-slate-200 hover:bg-transparent">
+              <TableHead className="w-[180px] text-[11px] uppercase tracking-wider text-slate-500">Student</TableHead>
+              <TableHead className="w-[170px] text-[11px] uppercase tracking-wider text-slate-500">Event Type</TableHead>
+              <TableHead className="text-[11px] uppercase tracking-wider text-slate-500">Message</TableHead>
+              <TableHead className="w-[110px] text-[11px] uppercase tracking-wider text-slate-500">Severity</TableHead>
+              <TableHead className="w-[150px] text-right text-[11px] uppercase tracking-wider text-slate-500">Timestamp</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {visible.length === 0 && (
-              <TableRow className="border-white/5">
-                <TableCell colSpan={5} className="py-10 text-center text-[12px] text-[var(--drishti-sub)]">
+              <TableRow className="border-slate-100">
+                <TableCell colSpan={5} className="py-10 text-center text-[12px] text-slate-400">
                   No audit events match this filter.
                 </TableCell>
               </TableRow>
@@ -172,19 +172,19 @@ export function AuditLogTab() {
               const style = SEVERITY_STYLE[e.severity];
               const student = students.find((s) => s.id === e.studentId);
               return (
-                <TableRow key={e.id} className="border-white/5 align-top">
+                <TableRow key={e.id} className="border-slate-100 align-top hover:bg-slate-50/60">
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {student && <AvatarCircle name={student.name} color={student.avatarColor} />}
                       <div className="min-w-0">
-                        <div className="truncate text-[12px] font-semibold text-white">{e.studentName}</div>
-                        <div className="text-[10px] text-[var(--drishti-sub)]">{student?.roll}</div>
+                        <div className="truncate text-[12px] font-semibold text-slate-900">{e.studentName}</div>
+                        <div className="text-[10px] text-slate-500">{student?.roll}</div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <span
-                      className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold"
+                      className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold shadow-2xs"
                       style={{ color: style.color, borderColor: style.border, background: style.bg }}
                     >
                       {EVENT_ICON[e.eventType]}
@@ -192,19 +192,19 @@ export function AuditLogTab() {
                     </span>
                   </TableCell>
                   <TableCell className="max-w-[420px]">
-                    <span className="text-[12px] leading-relaxed text-white/85">{e.message}</span>
+                    <span className="text-[12px] leading-relaxed text-slate-700">{e.message}</span>
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className="font-semibold"
+                      className="font-semibold shadow-2xs"
                       style={{ color: style.color, borderColor: style.border, background: style.bg }}
                     >
                       {style.label}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <span className="text-[11px] text-[var(--drishti-sub)]">
+                    <span className="text-[11px] text-slate-500">
                       {new Date(e.timestamp).toLocaleString()}
                     </span>
                   </TableCell>
@@ -238,13 +238,13 @@ function FilterChip({
       onClick={onClick}
       className={`h-7 gap-1.5 px-2.5 text-[11px] transition ${
         active
-          ? "border-white/30 bg-white/10 text-white"
-          : "border-white/10 bg-transparent text-[var(--drishti-sub)] hover:bg-white/5 hover:text-white"
+          ? "border-indigo-300 bg-indigo-50/80 text-indigo-700 font-semibold shadow-2xs"
+          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
       }`}
     >
       <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: color }} />
       {label}
-      <span className="rounded-full bg-white/10 px-1 text-[10px] text-[var(--drishti-sub)]">{count}</span>
+      <span className="rounded-full bg-slate-100 px-1 text-[10px] text-slate-500">{count}</span>
     </Button>
   );
 }

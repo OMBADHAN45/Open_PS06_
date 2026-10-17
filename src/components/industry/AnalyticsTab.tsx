@@ -20,18 +20,19 @@ import {
 } from "recharts";
 import { BarChart3, TrendingUp, AlertTriangle } from "lucide-react";
 
-const GOLD = "#ffe2b2";
-const BLUE = "#9fe0ff";
+const GOLD = "#4f46e5";
+const BLUE = "#0ea5e9";
 const EMERALD = "#10b981";
 const CRIMSON = "#ef4444";
 const AMBER = "#f59e0b";
 
 const tooltipStyle = {
-  background: "#0a0f1c",
-  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#ffffff",
+  border: "1px solid #e2e8f0",
   borderRadius: "8px",
-  color: "#fff",
+  color: "#0f172a",
   fontSize: "12px",
+  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
 };
 
 export function AnalyticsTab() {
@@ -93,8 +94,8 @@ export function AnalyticsTab() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-white sm:text-2xl">Analytics — Batch Intelligence</h1>
-        <p className="text-[13px] text-[var(--drishti-sub)]">
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Analytics — Batch Intelligence</h1>
+        <p className="text-[13px] text-slate-500">
           Cross-batch signal: which skills are actually verified vs merely claimed, where candidates
           stall in your funnel, and the recurring skill gaps blocking offers.
         </p>
@@ -102,51 +103,51 @@ export function AnalyticsTab() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Skill distribution */}
-        <Card className="drishti-card border-white/10 bg-white/[0.03]">
+        <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <CardContent className="p-4 sm:p-6">
             <div className="mb-4 flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-[var(--drishti-blue)]" />
-              <h2 className="text-[14px] font-bold text-white">Batch Skill Distribution</h2>
-              <span className="ml-auto text-[11px] text-[var(--drishti-sub)]">
+              <BarChart3 className="h-4 w-4 text-sky-600" />
+              <h2 className="text-[14px] font-bold text-slate-900">Batch Skill Distribution</h2>
+              <span className="ml-auto text-[11px] text-slate-400">
                 verified vs blocked claims per skill
               </span>
             </div>
             <div className="h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={skillDist} margin={{ top: 8, right: 8, bottom: 8, left: -16 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis
                     dataKey="skill"
-                    tick={{ fill: "#a2a9b8", fontSize: 10 }}
+                    tick={{ fill: "#64748b", fontSize: 10 }}
                     angle={-25}
                     textAnchor="end"
                     height={60}
                     interval={0}
                   />
-                  <YAxis tick={{ fill: "#a2a9b8", fontSize: 11 }} allowDecimals={false} />
-                  <RTooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 11 }} allowDecimals={false} />
+                  <RTooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(99, 102, 241, 0.05)" }} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   <Bar dataKey="verified" name="Verified" stackId="a" fill={EMERALD} radius={[0, 0, 0, 0]} />
                   <Bar dataKey="blocked" name="Blocked / unverified" stackId="a" fill={CRIMSON} radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="blocked" position="top" fill="#a2a9b8" fontSize={10} />
+                    <LabelList dataKey="blocked" position="top" fill="#64748b" fontSize={10} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-2 text-[11px] text-[var(--drishti-sub)]">
-              <span className="font-semibold text-emerald-400">{skillDist.reduce((a, b) => a + b.verified, 0)}</span> verified ·{" "}
-              <span className="font-semibold text-red-400">{skillDist.reduce((a, b) => a + b.blocked, 0)}</span> blocked
+            <div className="mt-2 text-[11px] text-slate-500">
+              <span className="font-semibold text-emerald-600">{skillDist.reduce((a, b) => a + b.verified, 0)}</span> verified ·{" "}
+              <span className="font-semibold text-rose-600">{skillDist.reduce((a, b) => a + b.blocked, 0)}</span> blocked
             </div>
           </CardContent>
         </Card>
 
         {/* Hiring velocity */}
-        <Card className="drishti-card border-white/10 bg-white/[0.03]">
+        <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <CardContent className="p-4 sm:p-6">
             <div className="mb-4 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-[var(--drishti-gold)]" />
-              <h2 className="text-[14px] font-bold text-white">Hiring Velocity</h2>
-              <span className="ml-auto text-[11px] text-[var(--drishti-sub)]">
+              <TrendingUp className="h-4 w-4 text-indigo-600" />
+              <h2 className="text-[14px] font-bold text-slate-900">Hiring Velocity</h2>
+              <span className="ml-auto text-[11px] text-slate-400">
                 applications per pipeline stage
               </span>
             </div>
@@ -155,46 +156,46 @@ export function AnalyticsTab() {
                 <AreaChart data={velocity} margin={{ top: 8, right: 8, bottom: 8, left: -16 }}>
                   <defs>
                     <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={GOLD} stopOpacity={0.7} />
-                      <stop offset="100%" stopColor={GOLD} stopOpacity={0.05} />
+                      <stop offset="0%" stopColor="#4f46e5" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="stage" tick={{ fill: "#a2a9b8", fontSize: 10 }} angle={-15} textAnchor="end" height={50} interval={0} />
-                  <YAxis tick={{ fill: "#a2a9b8", fontSize: 11 }} allowDecimals={false} />
-                  <RTooltip contentStyle={tooltipStyle} cursor={{ stroke: GOLD, strokeOpacity: 0.4 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="stage" tick={{ fill: "#64748b", fontSize: 10 }} angle={-15} textAnchor="end" height={50} interval={0} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 11 }} allowDecimals={false} />
+                  <RTooltip contentStyle={tooltipStyle} cursor={{ stroke: "#4f46e5", strokeOpacity: 0.4 }} />
                   <Area
                     type="monotone"
                     dataKey="count"
                     name="Candidates"
-                    stroke={GOLD}
+                    stroke="#4f46e5"
                     strokeWidth={2}
                     fill="url(#velocityGrad)"
-                    dot={{ fill: GOLD, r: 3 }}
+                    dot={{ fill: "#4f46e5", r: 3 }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-2 text-[11px] text-[var(--drishti-sub)]">
-              Total in pipeline: <span className="font-semibold text-[var(--drishti-gold)]">{applications.length}</span> ·{" "}
-              Offers: <span className="font-semibold text-emerald-400">{applications.filter((a) => a.stage === "Offer").length}</span>
+            <div className="mt-2 text-[11px] text-slate-500">
+              Total in pipeline: <span className="font-semibold text-indigo-600">{applications.length}</span> ·{" "}
+              Offers: <span className="font-semibold text-emerald-600">{applications.filter((a) => a.stage === "Offer").length}</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Top missing skill gaps — full width */}
-      <Card className="drishti-card border-white/10 bg-white/[0.03]">
+      <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <CardContent className="p-4 sm:p-6">
           <div className="mb-4 flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-[var(--drishti-amber)]" />
-            <h2 className="text-[14px] font-bold text-white">Top Missing Skill Gaps</h2>
-            <span className="ml-auto text-[11px] text-[var(--drishti-sub)]">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <h2 className="text-[14px] font-bold text-slate-900">Top Missing Skill Gaps</h2>
+            <span className="ml-auto text-[11px] text-slate-400">
               recurring required-skill gaps across all applications
             </span>
           </div>
           {gaps.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-white/10 p-6 text-center text-[12px] text-[var(--drishti-sub)]">
+            <div className="rounded-lg border border-dashed border-slate-200 p-6 text-center text-[12px] text-slate-400">
               No skill gaps detected — every applicant meets every required skill. Try posting more challenging jobs.
             </div>
           ) : (
@@ -205,25 +206,25 @@ export function AnalyticsTab() {
                   data={gaps}
                   margin={{ top: 8, right: 24, bottom: 8, left: 24 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
-                  <XAxis type="number" tick={{ fill: "#a2a9b8", fontSize: 11 }} allowDecimals={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: "#64748b", fontSize: 11 }} allowDecimals={false} />
                   <YAxis
                     type="category"
                     dataKey="skill"
-                    tick={{ fill: "#a2a9b8", fontSize: 11 }}
+                    tick={{ fill: "#64748b", fontSize: 11 }}
                     width={120}
                   />
-                  <RTooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                  <RTooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(99, 102, 241, 0.05)" }} />
                   <Bar dataKey="count" name="Missing in" radius={[0, 4, 4, 0]} fill={AMBER}>
-                    <LabelList dataKey="count" position="right" fill="#a2a9b8" fontSize={11} />
+                    <LabelList dataKey="count" position="right" fill="#64748b" fontSize={11} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
-          <div className="mt-2 text-[11px] text-[var(--drishti-sub)]">
+          <div className="mt-2 text-[11px] text-slate-500">
             💡 Suggest the TPO organize targeted workshops for{" "}
-            <span className="font-semibold text-[var(--drishti-amber)]">
+            <span className="font-semibold text-amber-600">
               {gaps.slice(0, 3).map((g) => g.skill).join(", ")}
             </span>{" "}
             to close the biggest gaps.

@@ -1,69 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAppStore, type View } from "@/lib/store";
+import { useState } from "react";
+import { useAppStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  GraduationCap,
-  Building2,
-  Landmark,
-  ChevronsUpDown,
-  Home,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
   Search,
-  Sparkles,
-  HelpCircle,
 } from "lucide-react";
-import { PlatformTourModal } from "@/components/shared/PlatformTourModal";
 
-const ROLES: { view: View; label: string; icon: React.ReactNode; accent: string }[] = [
-  { view: "student", label: "Student Portal", icon: <GraduationCap className="h-4 w-4" />, accent: "var(--drishti-blue)" },
-  { view: "industry", label: "Industry Portal", icon: <Building2 className="h-4 w-4" />, accent: "var(--drishti-gold)" },
-  { view: "tpo", label: "TPO Admin", icon: <Landmark className="h-4 w-4" />, accent: "var(--drishti-emerald)" },
-];
-
-export function RoleSwitcher() {
-  const view = useAppStore((s) => s.view);
+export function LogoutButton() {
   const setView = useAppStore((s) => s.setView);
-  const current = ROLES.find((r) => r.view === view) ?? ROLES[0];
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setView("landing");
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-white/10">
-          <span style={{ color: current.accent }}>{current.icon}</span>
-          <span className="hidden sm:inline">{current.label}</span>
-          <ChevronsUpDown className="h-3 w-3 text-[var(--drishti-sub)]" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52 border-white/10 bg-[#0a0f1c] text-white">
-        <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Demo Role Switcher</DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-white/10" />
-        {ROLES.map((r) => (
-          <DropdownMenuItem
-            key={r.view}
-            onClick={() => setView(r.view)}
-            className="cursor-pointer gap-2 focus:bg-white/10"
-          >
-            <span style={{ color: r.accent }}>{r.icon}</span>
-            {r.label}
-            {r.view === view && <span className="ml-auto text-[10px] text-[var(--drishti-sub)]">●</span>}
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator className="bg-white/10" />
-        <DropdownMenuItem onClick={() => setView("landing")} className="cursor-pointer gap-2 focus:bg-white/10">
-          <Home className="h-4 w-4 text-[var(--drishti-sub)]" />
-          Back to Landing
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <button
+      type="button"
+      onClick={handleLogout}
+      className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-[12px] font-semibold text-rose-700 transition-all hover:border-rose-300 hover:bg-rose-100 hover:text-rose-800 cursor-pointer shadow-sm active:scale-95"
+      title="Log Out to Main Page"
+      aria-label="Log Out"
+    >
+      <LogOut className="h-3.5 w-3.5 text-rose-600" />
+      <span>Log Out</span>
+    </button>
   );
 }
 
@@ -77,79 +46,81 @@ export function PortalHeader({
   right?: React.ReactNode;
 }) {
   const setView = useAppStore((s) => s.setView);
-  const [tourOpen, setTourOpen] = useState(false);
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "?" && !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) {
-        e.preventDefault();
-        setTourOpen(true);
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
 
   const openSearch = () => {
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }));
   };
 
   return (
-    <>
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-white/10 bg-[#02060f]/85 px-4 py-3 backdrop-blur-xl md:px-6">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setView("landing")} className="flex items-center gap-2" aria-label="DRISHTI home">
-            <svg viewBox="0 0 23 17" className="h-4 w-5" fill="none">
-              <path d="M2 1 L9 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
-              <path d="M8 1 L15 16" stroke="#9fe0ff" strokeWidth="2.2" strokeLinecap="round" />
-              <path d="M14 1 L21 16" stroke="#ffe2b2" strokeWidth="2.2" strokeLinecap="round" />
-            </svg>
-            <span className="text-[13px] font-bold tracking-[0.2em] text-white">DRISHTI</span>
-          </button>
-          <div className="hidden h-5 w-px bg-white/10 sm:block" />
-          <div>
-            <div className="text-[14px] font-semibold text-white">{title}</div>
-            {subtitle && <div className="text-[11px] text-[var(--drishti-sub)]">{subtitle}</div>}
-          </div>
-        </div>
-
-        {/* Center Quick Search Button */}
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-indigo-100/80 bg-white/85 px-4 py-3 backdrop-blur-xl md:px-6 shadow-[0_2px_12px_rgba(79,70,229,0.03)]">
+      <div className="flex items-center gap-3">
         <button
-          onClick={openSearch}
-          className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-[var(--drishti-sub)] transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+          onClick={(e) => {
+            e.preventDefault();
+            setView("landing");
+            if (typeof window !== "undefined") window.location.href = "/";
+          }}
+          className="flex items-center gap-2 cursor-pointer"
+          aria-label="DRISHTI home"
         >
-          <Search className="h-3 w-3 text-white/50" />
-          <span>Search candidates, jobs, commands...</span>
-          <kbd className="rounded border border-white/15 bg-black/40 px-1.5 py-0.5 text-[9px] font-mono text-white/60">
-            Ctrl+K
-          </kbd>
+          <svg viewBox="0 0 23 17" className="h-4 w-5" fill="none">
+            <path d="M2 1 L9 16" stroke="#4f46e5" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M8 1 L15 16" stroke="#0ea5e9" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M14 1 L21 16" stroke="#4f46e5" strokeWidth="2.4" strokeLinecap="round" />
+          </svg>
+          <span className="text-[13px] font-bold tracking-[0.2em] text-slate-900">DRISHTI</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          {/* Live Ledger Status chip */}
-          <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2.5 py-1 text-[11px] text-emerald-400 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Ledger Sync: Live
-          </span>
-
-          {/* Quick Guide modal button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setTourOpen(true)}
-            className="hidden sm:inline-flex gap-1.5 text-[11px] text-[var(--drishti-gold)] hover:bg-[var(--drishti-gold)]/10 hover:text-[var(--drishti-gold)] border border-[var(--drishti-gold)]/20"
+        {/* Forward and Backward Navigation Buttons */}
+        <div className="flex items-center gap-1 rounded-full border border-indigo-100 bg-slate-100/70 p-0.5">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") window.history.back();
+            }}
+            className="flex h-7 w-7 items-center justify-center rounded-full text-slate-600 transition hover:bg-white hover:text-slate-900 active:scale-95 cursor-pointer shadow-xs"
+            title="Go Backward (Back)"
+            aria-label="Go Backward"
           >
-            <Sparkles className="h-3 w-3" />
-            Platform Tour
-          </Button>
-
-          {right}
-          <RoleSwitcher />
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") window.history.forward();
+            }}
+            className="flex h-7 w-7 items-center justify-center rounded-full text-slate-600 transition hover:bg-white hover:text-slate-900 active:scale-95 cursor-pointer shadow-xs"
+            title="Go Forward"
+            aria-label="Go Forward"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
-      </header>
 
-      <PlatformTourModal open={tourOpen} onOpenChange={setTourOpen} />
-    </>
+        <div className="hidden h-5 w-px bg-slate-200 sm:block" />
+        <div>
+          <div className="text-[14px] font-bold text-slate-900">{title}</div>
+          {subtitle && <div className="text-[11px] text-slate-500">{subtitle}</div>}
+        </div>
+      </div>
+
+      {/* Center Quick Search Button */}
+      <button
+        onClick={openSearch}
+        className="hidden md:flex items-center gap-2 rounded-full border border-indigo-100 bg-slate-100/70 px-3 py-1.5 text-[11px] text-slate-500 transition hover:border-indigo-200 hover:bg-white hover:text-slate-800 shadow-xs cursor-pointer"
+      >
+        <Search className="h-3 w-3 text-slate-400" />
+        <span>Search candidates, jobs, commands...</span>
+        <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] font-mono text-slate-500 shadow-xs">
+          Ctrl+K
+        </kbd>
+      </button>
+
+      <div className="flex items-center gap-2">
+        {right}
+        <LogoutButton />
+      </div>
+    </header>
   );
 }
 
@@ -164,18 +135,18 @@ export function PortalShell({
 }) {
   const [mobileNav, setMobileNav] = useState(false);
   return (
-    <div className="flex min-h-screen flex-col bg-[#02060f]">
+    <div className="flex min-h-screen flex-col bg-[#f4f7fe]">
       {header}
       <div className="flex flex-1">
         {/* Sidebar (desktop) */}
-        <aside className="sticky top-[57px] hidden h-[calc(100vh-57px)] w-60 shrink-0 overflow-y-auto border-r border-white/10 bg-[#070b16] p-3 md:block">
+        <aside className="sticky top-[57px] hidden h-[calc(100vh-57px)] w-60 shrink-0 overflow-y-auto border-r border-indigo-100/80 bg-white p-3 md:block shadow-[2px_0_12px_rgba(79,70,229,0.03)]">
           {sidebar}
         </aside>
         {/* Mobile nav drawer */}
         {mobileNav && (
           <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileNav(false)}>
-            <div className="absolute inset-0 bg-black/60" />
-            <aside className="absolute left-0 top-0 h-full w-64 overflow-y-auto border-r border-white/10 bg-[#070b16] p-3" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+            <aside className="absolute left-0 top-0 h-full w-64 overflow-y-auto border-r border-indigo-100 bg-white p-3 shadow-2xl" onClick={(e) => e.stopPropagation()}>
               {sidebar}
             </aside>
           </div>
@@ -184,7 +155,7 @@ export function PortalShell({
       </div>
       <button
         onClick={() => setMobileNav(true)}
-        className="fixed bottom-4 right-4 z-30 rounded-full border border-white/10 bg-white/10 p-3 text-white backdrop-blur md:hidden"
+        className="fixed bottom-4 right-4 z-30 rounded-full border border-indigo-200 bg-indigo-600 p-3 text-white shadow-lg shadow-indigo-500/30 md:hidden cursor-pointer"
         aria-label="Open navigation"
       >
         ☰
@@ -209,11 +180,13 @@ export function NavItem({
   return (
     <button
       onClick={onClick}
-      className={`group flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] font-medium transition ${
-        active ? "bg-white/10 text-white" : "text-[var(--drishti-sub)] hover:bg-white/5 hover:text-white"
+      className={`group flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium transition cursor-pointer ${
+        active
+          ? "bg-gradient-to-r from-indigo-500/10 to-sky-500/10 text-indigo-700 font-semibold shadow-xs border border-indigo-100/80"
+          : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900"
       }`}
     >
-      <span className={active ? "text-[var(--drishti-gold)]" : ""}>{icon}</span>
+      <span className={active ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"}>{icon}</span>
       <span className="flex-1">{label}</span>
       {badge}
     </button>
@@ -223,7 +196,16 @@ export function NavItem({
 export function BackToLandingButton() {
   const setView = useAppStore((s) => s.setView);
   return (
-    <Button variant="ghost" size="sm" onClick={() => setView("landing")} className="text-[var(--drishti-sub)] hover:text-white">
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={(e) => {
+        e.preventDefault();
+        setView("landing");
+        if (typeof window !== "undefined") window.location.href = "/";
+      }}
+      className="text-slate-500 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+    >
       ← Landing
     </Button>
   );

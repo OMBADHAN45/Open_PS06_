@@ -35,14 +35,14 @@ const SOURCE_OPTIONS = [
 ];
 
 const SOURCE_STYLES: Record<string, string> = {
-  "WhatsApp Forward": "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
-  "Alumni Referral": "border-amber-500/40 bg-amber-500/10 text-amber-300",
-  "Partner Portal": "text-[#9fe0ff] border-[#9fe0ff]/40 bg-[#9fe0ff]/10",
-  "Email Forward": "border-fuchsia-400/40 bg-fuchsia-400/10 text-fuchsia-300",
+  "WhatsApp Forward": "border-emerald-200 bg-emerald-50 text-emerald-700 shadow-2xs",
+  "Alumni Referral": "border-amber-200 bg-amber-50 text-amber-700 shadow-2xs",
+  "Partner Portal": "border-sky-200 bg-sky-50 text-sky-700 shadow-2xs",
+  "Email Forward": "border-purple-200 bg-purple-50 text-purple-700 shadow-2xs",
 };
 
 function sourceChip(source: string) {
-  const cls = SOURCE_STYLES[source] ?? "border-white/20 bg-white/5 text-white";
+  const cls = SOURCE_STYLES[source] ?? "border-slate-200 bg-slate-100 text-slate-700";
   return (
     <span
       key={source}
@@ -130,16 +130,16 @@ export function IngestionTab() {
   return (
     <div className="space-y-5">
       {/* Summary banner */}
-      <div className="drishti-card flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="drishti-card flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#9fe0ff]/10 text-[#9fe0ff]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600">
             <GitMerge className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-[13px] font-semibold text-white">
+            <div className="text-[13px] font-bold text-slate-900">
               {totalRaw} raw sources → {totalMerged} canonical jobs
             </div>
-            <div className="text-[11px] text-[var(--drishti-sub)]">
+            <div className="text-[11px] text-slate-500">
               {totalDuplicates > 0
                 ? `${totalDuplicates} duplicate${totalDuplicates === 1 ? "" : "s"} merged across sources`
                 : "No duplicates detected yet"}
@@ -150,7 +150,7 @@ export function IngestionTab() {
           <Button
             variant="outline"
             size="sm"
-            className="border-[#9fe0ff]/40 bg-[#9fe0ff]/10 text-[#9fe0ff] hover:bg-[#9fe0ff]/20"
+            className="border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-2xs"
             onClick={simulateWhatsAppDuplicates}
           >
             <Sparkles className="h-3.5 w-3.5" /> Simulate WhatsApp Duplicate Merge
@@ -158,7 +158,7 @@ export function IngestionTab() {
           <Button
             variant="outline"
             size="sm"
-            className="border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500/20"
+            className="border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 shadow-2xs"
             onClick={clearRawSources}
             disabled={totalRaw === 0}
           >
@@ -169,16 +169,16 @@ export function IngestionTab() {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Left — paste feed */}
-        <div className="drishti-card flex flex-col gap-4 rounded-2xl p-5">
+        <div className="drishti-card flex flex-col gap-4 rounded-2xl p-5 border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffe2b2]/10 text-[#ffe2b2]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 border border-amber-200 text-amber-600">
               <Inbox className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-[14px] font-semibold text-white">
+              <h3 className="text-[14px] font-bold text-slate-900">
                 Paste chaotic WhatsApp / Alumni / Partner job feed
               </h3>
-              <p className="text-[11px] text-[var(--drishti-sub)]">
+              <p className="text-[11px] text-slate-500">
                 Drop raw forwards as-is — the engine normalizes and dedupes them.
               </p>
             </div>
@@ -186,7 +186,7 @@ export function IngestionTab() {
 
           <div className="space-y-3">
             <div>
-              <Label htmlFor="raw-text" className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">
+              <Label htmlFor="raw-text" className="mb-1.5 block text-[11px] font-medium text-slate-600">
                 Raw forwarded text
               </Label>
               <Textarea
@@ -194,18 +194,18 @@ export function IngestionTab() {
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
                 placeholder="Urgent hiring Finnable Credit Backend Engineer Pune Nodejs Postgres Redis 12 LPA..."
-                className="min-h-[110px] resize-y border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+                className="min-h-[110px] resize-y border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">Source channel</Label>
+                <Label className="mb-1.5 block text-[11px] font-medium text-slate-600">Source channel</Label>
                 <Select value={source} onValueChange={setSource}>
-                  <SelectTrigger className="w-full border-white/10 bg-black/30 text-[12px] text-white">
+                  <SelectTrigger className="w-full border-slate-200 bg-white text-[12px] text-slate-900 shadow-2xs">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="border-white/10 bg-[#0a0f1c] text-white">
+                  <SelectContent className="border-slate-200 bg-white text-slate-900 shadow-lg">
                     {SOURCE_OPTIONS.map((s) => (
                       <SelectItem key={s} value={s} className="text-[12px]">
                         {s}
@@ -215,54 +215,54 @@ export function IngestionTab() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="ctc" className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">CTC (optional)</Label>
+                <Label htmlFor="ctc" className="mb-1.5 block text-[11px] font-medium text-slate-600">CTC (optional)</Label>
                 <Input
                   id="ctc"
                   value={ctc}
                   onChange={(e) => setCtc(e.target.value)}
                   placeholder="12 LPA"
-                  className="border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+                  className="border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="company" className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">Company</Label>
+                <Label htmlFor="company" className="mb-1.5 block text-[11px] font-medium text-slate-600">Company</Label>
                 <Input
                   id="company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder="Finnable Credit"
-                  className="border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+                  className="border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
                 />
               </div>
               <div>
-                <Label htmlFor="role" className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">Role</Label>
+                <Label htmlFor="role" className="mb-1.5 block text-[11px] font-medium text-slate-600">Role</Label>
                 <Input
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder="Backend Engineer"
-                  className="border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+                  className="border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="location" className="mb-1.5 block text-[11px] font-medium text-[var(--drishti-sub)]">Location</Label>
+              <Label htmlFor="location" className="mb-1.5 block text-[11px] font-medium text-slate-600">Location</Label>
               <Input
                 id="location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Pune, India"
-                className="border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+                className="border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
               />
             </div>
 
             <Button
               onClick={handleAdd}
-              className="w-full bg-[#9fe0ff] text-[#06101f] hover:bg-[#9fe0ff]/90"
+              className="w-full bg-gradient-to-r from-indigo-500 to-sky-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200"
             >
               <Inbox className="h-4 w-4" /> Add Source
             </Button>
@@ -270,18 +270,18 @@ export function IngestionTab() {
         </div>
 
         {/* Right — Two-stage dedup engine */}
-        <div className="drishti-card flex flex-col gap-4 rounded-2xl p-5">
+        <div className="drishti-card flex flex-col gap-4 rounded-2xl p-5 border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10b981]/10 text-[#10b981]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600">
                 <Layers className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-[14px] font-semibold text-white">Two-Stage Deduplication Engine</h3>
-                <p className="text-[11px] text-[var(--drishti-sub)]">Blocking → cosine similarity (≥ 90%)</p>
+                <h3 className="text-[14px] font-bold text-slate-900">Two-Stage Deduplication Engine</h3>
+                <p className="text-[11px] text-slate-500">Blocking → cosine similarity (≥ 90%)</p>
               </div>
             </div>
-            <Badge className="border-[#10b981]/40 bg-[#10b981]/10 text-[#10b981]">
+            <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 shadow-2xs font-semibold">
               {dedupResult.blocks.length} blocks · {totalMerged} canonical
             </Badge>
           </div>
@@ -289,23 +289,23 @@ export function IngestionTab() {
           {/* Stage 1 — Blocking */}
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <span className="rounded-full bg-[#9fe0ff]/15 px-2 py-0.5 text-[10px] font-bold text-[#9fe0ff]">STAGE 1</span>
-              <span className="text-[12px] font-semibold text-white">Blocking</span>
-              <span className="text-[10px] text-[var(--drishti-sub)]">— normalized Company + Role + Location</span>
+              <span className="rounded-full bg-sky-100 border border-sky-200 px-2 py-0.5 text-[10px] font-bold text-sky-700">STAGE 1</span>
+              <span className="text-[12px] font-semibold text-slate-900">Blocking</span>
+              <span className="text-[10px] text-slate-400">— normalized Company + Role + Location</span>
             </div>
             <div className="max-h-44 space-y-2 overflow-y-auto pr-1">
               {dedupResult.blocks.length === 0 && (
-                <div className="rounded-lg border border-dashed border-white/10 p-4 text-center text-[11px] text-[var(--drishti-sub)]">
-                  No raw sources yet. Paste a feed on the left or click "Simulate WhatsApp Duplicate Merge".
+                <div className="rounded-lg border border-dashed border-slate-200 p-4 text-center text-[11px] text-slate-400">
+                  No raw sources yet. Paste a feed on the left or click &quot;Simulate WhatsApp Duplicate Merge&quot;.
                 </div>
               )}
               {dedupResult.blocks.map((block, i) => (
-                <div key={`blk-${i}`} className="rounded-lg border border-white/10 bg-black/30 p-2.5">
+                <div key={`blk-${i}`} className="rounded-lg border border-slate-200 bg-slate-50/70 p-2.5">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="truncate text-[12px] font-semibold text-white">
+                    <div className="truncate text-[12px] font-semibold text-slate-900">
                       {block[0].company} · {block[0].role}
                     </div>
-                    <Badge className="border-white/20 bg-white/10 text-[var(--drishti-sub)]">
+                    <Badge className="border-slate-200 bg-white text-slate-600 shadow-2xs font-medium">
                       {block.length} member{block.length === 1 ? "" : "s"}
                     </Badge>
                   </div>
@@ -324,12 +324,12 @@ export function IngestionTab() {
           {/* Stage 2 — Semantic similarity */}
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <span className="rounded-full bg-[#10b981]/15 px-2 py-0.5 text-[10px] font-bold text-[#10b981]">STAGE 2</span>
-              <span className="text-[12px] font-semibold text-white">Semantic Similarity (≥ 90% cosine)</span>
+              <span className="rounded-full bg-emerald-100 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">STAGE 2</span>
+              <span className="text-[12px] font-semibold text-slate-900">Semantic Similarity (≥ 90% cosine)</span>
             </div>
             <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
               {dedupResult.merged.length === 0 && (
-                <div className="rounded-lg border border-dashed border-white/10 p-4 text-center text-[11px] text-[var(--drishti-sub)]">
+                <div className="rounded-lg border border-dashed border-slate-200 p-4 text-center text-[11px] text-slate-400">
                   No canonical jobs to merge yet.
                 </div>
               )}
@@ -350,28 +350,28 @@ function MergedJobCard({ job }: { job: MergedJob }) {
     <div
       className={`rounded-lg border p-3 transition ${
         isMulti
-          ? "border-[#10b981]/50 bg-[#10b981]/[0.06]"
-          : "border-white/10 bg-black/30"
+          ? "border-emerald-200 bg-emerald-50/70 shadow-2xs"
+          : "border-slate-200 bg-white shadow-2xs"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <Building2 className="h-3.5 w-3.5 shrink-0 text-[#ffe2b2]" />
-            <span className="truncate text-[13px] font-semibold text-white">
+            <Building2 className="h-3.5 w-3.5 shrink-0 text-indigo-600" />
+            <span className="truncate text-[13px] font-bold text-slate-900">
               {job.company} — {job.role}
             </span>
             {isMulti && (
-              <Badge className="shrink-0 border-[#10b981]/40 bg-[#10b981]/15 text-[#10b981]">
+              <Badge className="shrink-0 border-emerald-300 bg-emerald-100 text-emerald-800 font-semibold shadow-2xs">
                 <ShieldCheck className="h-3 w-3" /> MERGED
               </Badge>
             )}
           </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[var(--drishti-sub)]">
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
             <span className="inline-flex items-center gap-1">
               <MessageCircle className="h-3 w-3" /> {job.location}
             </span>
-            {job.ctc && <span className="text-[#ffe2b2]">{job.ctc}</span>}
+            {job.ctc && <span className="font-semibold text-indigo-600">{job.ctc}</span>}
             <span className="inline-flex items-center gap-1">
               <Users className="h-3 w-3" /> {job.memberIds.length} source{job.memberIds.length === 1 ? "" : "s"}
             </span>
@@ -379,18 +379,18 @@ function MergedJobCard({ job }: { job: MergedJob }) {
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           {isMulti && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-[#10b981]/40 bg-[#10b981]/15 px-2 py-0.5 text-[10px] font-bold text-[#10b981]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 shadow-2xs">
               {Math.round(job.similarity * 100)}% sim
             </span>
           )}
         </div>
       </div>
       {isMulti && (
-        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-white/10 pt-2">
-          <span className="text-[10px] font-medium text-[var(--drishti-sub)]">Merged from:</span>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-emerald-200/60 pt-2">
+          <span className="text-[10px] font-medium text-slate-600">Merged from:</span>
           {job.sources.map((s, i) => (
-            <span key={`${s}-${i}`} className="inline-flex items-center gap-0.5 text-[10px] text-white/70">
-              {i > 0 && <span className="text-[var(--drishti-sub)]">+</span>}
+            <span key={`${s}-${i}`} className="inline-flex items-center gap-0.5 text-[10px] text-slate-700">
+              {i > 0 && <span className="text-slate-400">+</span>}
               {sourceChip(s)}
             </span>
           ))}
@@ -399,3 +399,4 @@ function MergedJobCard({ job }: { job: MergedJob }) {
     </div>
   );
 }
+

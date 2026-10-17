@@ -16,22 +16,22 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#02060f] px-6 text-center text-white">
-      <div className="absolute inset-0 drishti-grid-bg opacity-20 pointer-events-none" />
-      <div className="relative z-10 max-w-md space-y-5 rounded-2xl border border-white/10 bg-white/[0.03] p-8 shadow-2xl backdrop-blur-xl">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#f4f7fe] px-6 text-center text-slate-900">
+      <div className="absolute inset-0 drishti-grid-bg opacity-40 pointer-events-none" />
+      <div className="relative z-10 max-w-md space-y-5 rounded-2xl border border-slate-200/80 bg-white p-8 shadow-2xl backdrop-blur-xl">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-600 shadow-sm">
           <ShieldAlert className="h-7 w-7" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold tracking-tight">Something went unexpected</h2>
-          <p className="mt-1.5 text-[13px] text-[var(--drishti-sub)] leading-relaxed">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900">Something went unexpected</h2>
+          <p className="mt-1.5 text-[13px] text-slate-500 leading-relaxed">
             DRISHTI encountered a temporary runtime error. All your profile evidence and saved states are safe.
           </p>
         </div>
 
         {error?.message && (
-          <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-left font-mono text-[11px] text-red-300">
+          <div className="rounded-lg border border-rose-200 bg-rose-50/70 p-3 text-left font-mono text-[11px] text-rose-700">
             {error.message}
           </div>
         )}
@@ -39,7 +39,7 @@ export default function ErrorBoundary({
         <div className="flex flex-col gap-2.5 sm:flex-row sm:justify-center">
           <Button
             onClick={() => reset()}
-            className="bg-[var(--drishti-blue)] text-[#02060f] hover:bg-[#9fe0ff] font-semibold"
+            className="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-semibold shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all"
           >
             <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
             Try Again
@@ -47,7 +47,7 @@ export default function ErrorBoundary({
           <Button
             variant="outline"
             onClick={() => (window.location.href = "/")}
-            className="border-white/15 text-white hover:bg-white/10"
+            className="border-slate-200 text-slate-700 hover:bg-slate-50 shadow-2xs"
           >
             <Home className="mr-1.5 h-3.5 w-3.5" />
             Back to Home

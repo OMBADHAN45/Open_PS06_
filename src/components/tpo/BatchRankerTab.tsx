@@ -134,15 +134,15 @@ export function BatchRankerTab() {
   return (
     <div className="space-y-5">
       {/* JD input */}
-      <div className="drishti-card rounded-2xl p-5">
+      <div className="drishti-card rounded-2xl p-5 border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffe2b2]/10 text-[#ffe2b2]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600">
               <Calculator className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-[14px] font-semibold text-white">Paste raw Job Description</h3>
-              <p className="text-[11px] text-[var(--drishti-sub)]">
+              <h3 className="text-[14px] font-bold text-slate-900">Paste raw Job Description</h3>
+              <p className="text-[11px] text-slate-500">
                 DRISHTI auto-extracts role, company, location, CTC and required vs preferred skills.
               </p>
             </div>
@@ -150,7 +150,7 @@ export function BatchRankerTab() {
           <Button
             variant="outline"
             size="sm"
-            className="border-[#9fe0ff]/40 bg-[#9fe0ff]/10 text-[#9fe0ff] hover:bg-[#9fe0ff]/20"
+            className="border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-2xs"
             onClick={() => setJd(SAMPLE_JD)}
           >
             <ClipboardPaste className="h-3.5 w-3.5" /> Paste Sample Raw JD
@@ -161,32 +161,32 @@ export function BatchRankerTab() {
           value={jd}
           onChange={(e) => setJd(e.target.value)}
           placeholder="Paste the raw JD here…"
-          className="min-h-[140px] resize-y border-white/10 bg-black/30 text-[12px] text-white placeholder:text-white/30 focus-visible:border-[#9fe0ff]/40"
+          className="min-h-[140px] resize-y border-slate-200 bg-white text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
         />
 
         {parsePreview && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-white/10 bg-black/30 p-3">
-            <span className="text-[11px] text-[var(--drishti-sub)]">Parsed:</span>
-            <Badge className="border-[#ffe2b2]/40 bg-[#ffe2b2]/10 text-[#ffe2b2]">
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/70 p-3">
+            <span className="text-[11px] font-medium text-slate-500">Parsed:</span>
+            <Badge className="border-indigo-200 bg-indigo-50 text-indigo-700 font-semibold shadow-2xs">
               {parsePreview.company} — {parsePreview.role}
             </Badge>
-            <Badge variant="outline" className="border-white/20 text-white/70">
+            <Badge variant="outline" className="border-slate-200 bg-white text-slate-700 shadow-2xs">
               {parsePreview.location}
             </Badge>
-            <Badge variant="outline" className="border-white/20 text-white/70">
+            <Badge variant="outline" className="border-slate-200 bg-white text-slate-700 shadow-2xs">
               {parsePreview.ctc}
             </Badge>
-            <span className="text-[11px] text-[var(--drishti-sub)]">Required:</span>
+            <span className="text-[11px] font-medium text-slate-500">Required:</span>
             {parsePreview.requiredSkills.map((s) => (
-              <span key={s} className="rounded-full border border-[#10b981]/40 bg-[#10b981]/10 px-2 py-0.5 text-[10px] font-semibold text-[#10b981]">
+              <span key={s} className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 shadow-2xs">
                 {s}
               </span>
             ))}
             {parsePreview.preferredSkills.length > 0 && (
               <>
-                <span className="text-[11px] text-[var(--drishti-sub)]">Preferred:</span>
+                <span className="text-[11px] font-medium text-slate-500">Preferred:</span>
                 {parsePreview.preferredSkills.map((s) => (
-                  <span key={s} className="rounded-full border border-[#9fe0ff]/40 bg-[#9fe0ff]/10 px-2 py-0.5 text-[10px] font-semibold text-[#9fe0ff]">
+                  <span key={s} className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-700 shadow-2xs">
                     {s}
                   </span>
                 ))}
@@ -199,15 +199,15 @@ export function BatchRankerTab() {
           <Button
             onClick={handleRank}
             disabled={!tempJob}
-            className="bg-[#10b981] text-[#06101f] hover:bg-[#10b981]/90"
+            className="bg-gradient-to-r from-indigo-500 to-sky-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200"
           >
             <Calculator className="h-4 w-4" /> Rank Graduating Batch
           </Button>
           {ranAt && (
-            <span className="text-[11px] text-[var(--drishti-sub)]">
+            <span className="text-[11px] text-slate-500">
               Last ranked at {new Date(ranAt).toLocaleTimeString()} ·{" "}
-              <span className="text-[#10b981]">{ranked.length} students</span> ranked ·{" "}
-              <span className="text-[#ffe2b2]">{shortlistCount} verified shortlist</span>
+              <span className="font-semibold text-indigo-600">{ranked.length} students</span> ranked ·{" "}
+              <span className="font-semibold text-emerald-600">{shortlistCount} verified shortlist</span>
             </span>
           )}
         </div>
@@ -215,19 +215,19 @@ export function BatchRankerTab() {
 
       {/* Ranked table */}
       {ranked.length === 0 ? (
-        <div className="drishti-card rounded-2xl p-10 text-center">
-          <Trophy className="mx-auto mb-3 h-10 w-10 text-white/20" />
-          <div className="text-[14px] font-semibold text-white">No ranking yet</div>
-          <div className="mt-1 text-[12px] text-[var(--drishti-sub)]">
-            Paste a JD and click "Rank Graduating Batch" to shortlist verified candidates.
+        <div className="drishti-card rounded-2xl p-10 text-center border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
+          <Trophy className="mx-auto mb-3 h-10 w-10 text-slate-300" />
+          <div className="text-[14px] font-bold text-slate-900">No ranking yet</div>
+          <div className="mt-1 text-[12px] text-slate-500">
+            Paste a JD and click &quot;Rank Graduating Batch&quot; to shortlist verified candidates.
           </div>
         </div>
       ) : (
-        <div className="drishti-card rounded-2xl p-4">
+        <div className="drishti-card rounded-2xl p-4 border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <div className="mb-3 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-[#ffe2b2]" />
-              <h3 className="text-[14px] font-semibold text-white">
+              <Trophy className="h-4 w-4 text-amber-500" />
+              <h3 className="text-[14px] font-bold text-slate-900">
                 Ranked batch — {ranked.length} students
               </h3>
             </div>
@@ -235,36 +235,36 @@ export function BatchRankerTab() {
               variant="outline"
               size="sm"
               onClick={exportCsv}
-              className="border-[#10b981]/40 bg-[#10b981]/10 text-[#10b981] hover:bg-[#10b981]/20"
+              className="border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-2xs font-semibold"
             >
               <Download className="h-3.5 w-3.5" /> Export Verified Shortlist (CSV)
             </Button>
           </div>
           <Table>
             <TableHeader>
-              <TableRow className="border-white/10">
-                <TableHead className="w-[40px] text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Rank</TableHead>
-                <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Student</TableHead>
-                <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Fit</TableHead>
-                <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Verified Required</TableHead>
-                <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Skill Gaps</TableHead>
-                <TableHead className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Explanation</TableHead>
-                <TableHead className="text-right text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Proof</TableHead>
+              <TableRow className="border-slate-200">
+                <TableHead className="w-[40px] text-[11px] uppercase font-bold tracking-wider text-slate-500">Rank</TableHead>
+                <TableHead className="text-[11px] uppercase font-bold tracking-wider text-slate-500">Student</TableHead>
+                <TableHead className="text-[11px] uppercase font-bold tracking-wider text-slate-500">Fit</TableHead>
+                <TableHead className="text-[11px] uppercase font-bold tracking-wider text-slate-500">Verified Required</TableHead>
+                <TableHead className="text-[11px] uppercase font-bold tracking-wider text-slate-500">Skill Gaps</TableHead>
+                <TableHead className="text-[11px] uppercase font-bold tracking-wider text-slate-500">Explanation</TableHead>
+                <TableHead className="text-right text-[11px] uppercase font-bold tracking-wider text-slate-500">Proof</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ranked.map((r, i) => (
-                <TableRow key={r.student.id} className="border-white/5 align-top">
+                <TableRow key={r.student.id} className="border-slate-100 align-top hover:bg-slate-50/70">
                   <TableCell>
                     <span
                       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold ${
                         i === 0
-                          ? "bg-[#ffe2b2]/20 text-[#ffe2b2]"
+                          ? "bg-amber-500 text-white shadow-xs"
                           : i === 1
-                          ? "bg-[#9fe0ff]/20 text-[#9fe0ff]"
+                          ? "bg-sky-500 text-white shadow-xs"
                           : i === 2
-                          ? "bg-[#10b981]/20 text-[#10b981]"
-                          : "bg-white/5 text-white/70"
+                          ? "bg-emerald-500 text-white shadow-xs"
+                          : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {i + 1}
@@ -274,12 +274,12 @@ export function BatchRankerTab() {
                     <div className="flex items-center gap-2">
                       <AvatarCircle name={r.student.name} color={r.student.avatarColor} />
                       <div className="min-w-0">
-                        <div className="truncate text-[12px] font-semibold text-white">{r.student.name}</div>
-                        <div className="flex items-center gap-1.5 text-[10px] text-[var(--drishti-sub)]">
+                        <div className="truncate text-[12px] font-bold text-slate-900">{r.student.name}</div>
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
                           <GraduationCap className="h-3 w-3" />
                           {r.student.branch} · {r.student.batch}
                         </div>
-                        <div className="text-[10px] text-[var(--drishti-sub)]">
+                        <div className="text-[10px] text-slate-400">
                           Roll {r.student.roll} · CGPA {r.student.cgpa.toFixed(1)}
                         </div>
                       </div>
@@ -291,7 +291,7 @@ export function BatchRankerTab() {
                   <TableCell>
                     <div className="flex max-w-[200px] flex-wrap gap-1">
                       {r.verifiedRequired.length === 0 ? (
-                        <span className="text-[10px] text-red-400">— none —</span>
+                        <span className="text-[10px] text-rose-500">— none —</span>
                       ) : (
                         r.verifiedRequired.map((s) => <VerifiedPill key={s}>{s}</VerifiedPill>)
                       )}
@@ -300,20 +300,20 @@ export function BatchRankerTab() {
                   <TableCell>
                     <div className="flex max-w-[180px] flex-wrap gap-1">
                       {r.missingRequired.length === 0 ? (
-                        <span className="text-[10px] text-[#10b981]">no gaps</span>
+                        <span className="text-[10px] font-medium text-emerald-600">no gaps</span>
                       ) : (
                         r.missingRequired.map((s) => <GapPill key={s}>{s}</GapPill>)
                       )}
                     </div>
                   </TableCell>
                   <TableCell className="max-w-[280px]">
-                    <span className="text-[11px] leading-relaxed text-white/80">{r.explanation}</span>
+                    <span className="text-[11px] leading-relaxed text-slate-700">{r.explanation}</span>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-[#9fe0ff]/40 bg-[#9fe0ff]/10 text-[#9fe0ff] hover:bg-[#9fe0ff]/20"
+                      className="border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-2xs font-semibold"
                       onClick={() => openInspector(r.student.id)}
                     >
                       <Search className="h-3 w-3" /> Inspect Proof

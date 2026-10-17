@@ -60,13 +60,13 @@ export function PipelineTab() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-white sm:text-2xl">Hiring Pipeline — Live Kanban</h1>
-          <p className="text-[13px] text-[var(--drishti-sub)]">
+          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Hiring Pipeline — Live Kanban</h1>
+          <p className="text-[13px] text-slate-500">
             Move candidates through the funnel. Every change syncs back to the Student Portal and
             TPO Admin in real-time.
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-[var(--drishti-emerald)]/30 bg-[var(--drishti-emerald)]/10 px-3 py-1.5 text-[11px] font-semibold text-[var(--drishti-emerald)]">
+        <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-semibold text-emerald-700 shadow-2xs">
           <RotateCw className="h-3 w-3" />
           Synced across portals
         </div>
@@ -82,30 +82,30 @@ export function PipelineTab() {
               <div key={stage} className="flex w-[280px] shrink-0 flex-col">
                 {/* Column header */}
                 <div
-                  className="mb-2 rounded-lg border p-3"
-                  style={{ borderColor: `${meta.color}44`, background: `${meta.color}12` }}
+                  className="mb-2 rounded-lg border p-3 shadow-2xs"
+                  style={{ borderColor: `${meta.color}55`, background: `${meta.color}15` }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full" style={{ background: meta.color }} />
-                      <span className="text-[13px] font-bold text-white">{meta.label}</span>
+                      <span className="text-[13px] font-bold text-slate-900">{meta.label}</span>
                     </div>
                     <span
-                      className="rounded-full px-2 py-0.5 text-[11px] font-bold"
-                      style={{ background: `${meta.color}22`, color: meta.color }}
+                      className="rounded-full px-2 py-0.5 text-[11px] font-bold shadow-2xs"
+                      style={{ background: "#ffffff", color: meta.color, border: `1px solid ${meta.color}44` }}
                     >
                       {cards.length}
                     </span>
                   </div>
-                  <div className="mt-0.5 text-[10px] text-[var(--drishti-sub)]">{meta.description}</div>
+                  <div className="mt-0.5 text-[10px] text-slate-500">{meta.description}</div>
                 </div>
 
                 {/* Cards */}
-                <div className="flex-1 space-y-2 rounded-lg border border-dashed border-white/10 bg-white/[0.01] p-2">
+                <div className="flex-1 space-y-2 rounded-lg border border-slate-200 bg-slate-100/60 p-2 min-h-[300px]">
                   {cards.length === 0 ? (
-                    <div className="rounded-md border border-dashed border-white/10 p-4 text-center text-[10px] text-[var(--drishti-sub)]/60">
+                    <div className="rounded-md border border-dashed border-slate-200 p-6 text-center text-[11px] text-slate-400">
                       <Users className="mx-auto mb-1 h-4 w-4 opacity-50" />
-                      empty
+                      No applicants in this stage
                     </div>
                   ) : (
                     cards.map((a) => (
@@ -146,71 +146,88 @@ function PipelineCard({
   if (!student || !job) return null;
 
   return (
-    <Card className="drishti-card border-white/10 bg-white/[0.03] transition hover:border-white/20">
-      <CardContent className="space-y-2 p-3">
-        <div className="flex items-center gap-2">
-          <AvatarCircle name={student.name} color={student.avatarColor} />
-          <div className="min-w-0">
-            <div className="truncate text-[12px] font-semibold text-white">{student.name}</div>
-            <div className="truncate text-[10px] text-[var(--drishti-sub)]">{student.branch}</div>
+    <Card className="group relative drishti-card rounded-xl border border-slate-200 bg-white/95 backdrop-blur-md p-3 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-150">
+      <CardContent className="p-0 space-y-2">
+        {/* Top Row: Avatar + Name & Target Role + Fit Score Badge */}
+        <div className="flex items-start justify-between gap-1.5">
+          <div className="flex items-center gap-2 min-w-0">
+            <AvatarCircle name={student.name} color={student.avatarColor} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[12px] font-semibold text-slate-900">{student.name}</div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-500 truncate">
+                <Building2 className="h-2.5 w-2.5 text-slate-400 shrink-0" />
+                <span className="truncate">{job.role}</span>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="rounded-md border border-white/10 bg-black/20 p-2">
-          <div className="flex items-center gap-1 text-[10px] text-[var(--drishti-sub)]">
-            <Building2 className="h-2.5 w-2.5" />
-            {job.company}
-          </div>
-          <div className="truncate text-[12px] font-medium text-white">{job.role}</div>
-        </div>
-
-        {typeof app.fitScore === "number" && (
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
-              Fit
-            </span>
+          {typeof app.fitScore === "number" && (
             <FitScoreBadge score={app.fitScore} />
-          </div>
-        )}
+          )}
+        </div>
 
-        <div className="flex items-center justify-between gap-1 border-t border-white/5 pt-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={onBack}
-                disabled={isFirst}
-                className="h-7 px-2 text-[var(--drishti-sub)] hover:text-white disabled:opacity-30"
+        {/* Compact Visual Skill Pills (max 3) */}
+        <div className="flex flex-wrap items-center gap-1">
+          {student.skills.slice(0, 3).map((sk) => {
+            const isVerified = sk.status === "verified";
+            const isFailed = sk.status === "failed";
+            return (
+              <span
+                key={sk.canonical}
+                className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9.5px] font-medium border ${
+                  isVerified
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : isFailed
+                    ? "border-rose-200 bg-rose-50 text-rose-700"
+                    : "border-amber-200 bg-amber-50 text-amber-700"
+                }`}
               >
-                <ArrowLeft className="h-3 w-3" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="bg-[#0a0f1c] text-[11px] text-white">
-              Move back to {PIPELINE_STAGES[Math.max(0, PIPELINE_STAGES.indexOf(app.stage) - 1)]}
-            </TooltipContent>
-          </Tooltip>
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    isVerified
+                      ? "bg-emerald-500"
+                      : isFailed
+                      ? "bg-rose-500"
+                      : "bg-amber-500"
+                  }`}
+                />
+                {sk.canonical}
+              </span>
+            );
+          })}
+          {student.skills.length > 3 && (
+            <span className="text-[9.5px] font-medium text-slate-400">
+              +{student.skills.length - 3}
+            </span>
+          )}
+        </div>
 
-          <span className="text-[10px] text-[var(--drishti-sub)]">
-            {new Date(app.appliedAt).toLocaleDateString()}
-          </span>
+        {/* Company & Date Strip */}
+        <div className="flex items-center justify-between text-[10px] text-slate-400">
+          <span className="truncate max-w-[110px]">{job.company}</span>
+          <span>{new Date(app.appliedAt).toLocaleDateString()}</span>
+        </div>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={onAdvance}
-                disabled={isLast}
-                className="h-7 px-2 text-[var(--drishti-emerald)] hover:bg-emerald-500/10 hover:text-emerald-400 disabled:opacity-30"
-              >
-                <ArrowRight className="h-3 w-3" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="bg-[#0a0f1c] text-[11px] text-white">
-              Advance to {PIPELINE_STAGES[Math.min(PIPELINE_STAGES.length - 1, PIPELINE_STAGES.indexOf(app.stage) + 1)]}
-            </TooltipContent>
-          </Tooltip>
+        {/* Hover-Revealed Navigation Controls */}
+        <div className="flex items-center gap-1 max-h-0 overflow-hidden opacity-0 group-hover:max-h-8 group-hover:opacity-100 transition-all duration-200 pt-0.5">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={onBack}
+            disabled={isFirst}
+            className="h-6.5 flex-1 border-slate-200 bg-slate-50 px-1.5 text-[10px] text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer disabled:opacity-30"
+          >
+            <ArrowLeft className="h-3 w-3 mr-0.5" /> Back
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={onAdvance}
+            disabled={isLast}
+            className="h-6.5 flex-1 px-1.5 text-[10px] font-semibold border-indigo-200 bg-indigo-50/80 text-indigo-700 hover:bg-indigo-100 cursor-pointer disabled:opacity-30"
+          >
+            Advance <ArrowRight className="h-3 w-3 ml-0.5" />
+          </Button>
         </div>
       </CardContent>
     </Card>

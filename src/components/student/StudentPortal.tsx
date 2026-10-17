@@ -8,9 +8,10 @@ import { ProctoringTab } from "./ProctoringTab";
 import { SmartJobFeedTab } from "./SmartJobFeedTab";
 import { ResumeStudioTab } from "./ResumeStudioTab";
 import { ApplicationTrackerTab } from "./ApplicationTrackerTab";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AvatarCircle } from "@/components/shared/primitives";
-import { FolderGit2, ShieldCheck, Briefcase, FileText, KanbanSquare, Github, GraduationCap, ChevronsUpDown } from "lucide-react";
+import { FolderGit2, ShieldCheck, Briefcase, FileText, KanbanSquare, Github, ChevronsUpDown, UserPlus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 type Tab = "profile" | "assess" | "jobs" | "resume" | "tracker";
@@ -19,14 +20,55 @@ export function StudentPortal() {
   const [tab, setTab] = useState<Tab>("profile");
   const activeStudentId = useAppStore((s) => s.activeStudentId);
   const setActiveStudent = useAppStore((s) => s.setActiveStudent);
+  const setStudentOnboardingModalOpen = useAppStore((s) => s.setStudentOnboardingModalOpen);
   const students = useAppStore((s) => s.students);
   const student = students.find((s) => s.id === activeStudentId) ?? students[0];
+
+  // Sync tab with browser history for back/forward buttons
+  const handleTabChange = (newTab: Tab) => {
+    setTab(newTab);
+    if (typeof window !== "undefined") {
+      window.history.pushState(
+        { view: "student", tab: newTab },
+        "",
+        `/student?tab=${newTab}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Initial sync from URL search params
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlTab = params.get("tab") as Tab | null;
+      if (urlTab && tabs.some((t) => t.id === urlTab)) {
+        setTab(urlTab);
+      }
+    }
+
+    const onPop = (e: PopStateEvent) => {
+      if (e.state?.tab && tabs.some((t) => t.id === e.state.tab)) {
+        setTab(e.state.tab);
+      } else if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const urlTab = params.get("tab") as Tab | null;
+        if (urlTab && tabs.some((t) => t.id === urlTab)) {
+          setTab(urlTab);
+        } else {
+          setTab("profile");
+        }
+      }
+    };
+
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   // listen for goto-tab events from other tabs
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail as Tab;
-      if (detail) setTab(detail);
+      if (detail) handleTabChange(detail);
     };
     window.addEventListener("drishti:goto-tab", handler as EventListener);
     return () => window.removeEventListener("drishti:goto-tab", handler as EventListener);
@@ -51,35 +93,48 @@ export function StudentPortal() {
               <div className="flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[12px] text-white hover:bg-white/10">
+                    <button className="flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-2.5 py-1 text-[12px] text-slate-800 hover:bg-slate-50 shadow-xs cursor-pointer">
                       <AvatarCircle name={student.name} color={student.avatarColor} />
                       <div className="hidden text-left sm:block">
-                        <div className="text-[12px] font-semibold leading-tight">{student.name}</div>
-                        <div className="text-[10px] text-[var(--drishti-sub)]">{student.branch} · {student.batch}</div>
+                        <div className="text-[12px] font-semibold leading-tight text-slate-900">{student.name}</div>
+                        <div className="text-[10px] text-slate-500">{student.branch} · {student.batch}</div>
                       </div>
-                      <ChevronsUpDown className="h-3 w-3 text-[var(--drishti-sub)]" />
+                      <ChevronsUpDown className="h-3 w-3 text-slate-400" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 border-white/10 bg-[#0a0f1c] text-white">
-                    <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">Demo: Switch Student</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuContent align="end" className="w-56 border-slate-200 bg-white text-slate-900 shadow-xl">
+                    <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-slate-400">Demo: Switch Student</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-slate-100" />
                     {students.map((st) => (
-                      <DropdownMenuItem key={st.id} onClick={() => setActiveStudent(st.id)} className="cursor-pointer gap-2 focus:bg-white/10">
+                      <DropdownMenuItem key={st.id} onClick={() => setActiveStudent(st.id)} className="cursor-pointer gap-2 focus:bg-indigo-50/60 focus:text-indigo-900">
                         <AvatarCircle name={st.name} color={st.avatarColor} />
                         <div className="flex-1">
-                          <div className="text-[12px] font-medium">{st.name}</div>
-                          <div className="text-[10px] text-[var(--drishti-sub)]">{st.branch} · {st.verificationScore}%</div>
+                          <div className="text-[12px] font-semibold text-slate-900">{st.name}</div>
+                          <div className="text-[10px] text-slate-500">{st.branch} · {st.verificationScore}%</div>
                         </div>
-                        {st.id === activeStudentId && <span className="text-[10px] text-[var(--drishti-blue)]">●</span>}
+                        {st.id === activeStudentId && <span className="text-[10px] text-indigo-600 font-bold">●</span>}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Badge className="hidden border-emerald-500/40 bg-emerald-500/10 text-emerald-400 sm:inline-flex"><Github className="mr-1 h-3 w-3" /> GitHub Connected ✓</Badge>
-                <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-[11px] text-[var(--drishti-sub)]">Verification</span>
-                  <span className="text-[13px] font-bold" style={{ color: student.verificationScore >= 85 ? "#10b981" : student.verificationScore >= 70 ? "#f59e0b" : "#ef4444" }}>{student.verificationScore}%</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setStudentOnboardingModalOpen(true)}
+                  className="hidden md:inline-flex border-indigo-200 bg-indigo-50/60 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100/70 shadow-xs cursor-pointer"
+                >
+                  <UserPlus className="mr-1.5 h-3.5 w-3.5 text-indigo-600" />
+                  Onboarding Pipeline
+                </Button>
+                <Badge className="hidden border-emerald-200 bg-emerald-100 text-emerald-800 shadow-xs sm:inline-flex font-semibold">
+                  <Github className="mr-1 h-3 w-3 text-emerald-700" /> GitHub Connected ✓
+                </Badge>
+                <div className="flex items-center gap-1.5 rounded-full border border-indigo-100 bg-white px-2.5 py-1 shadow-xs">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  <span className="text-[11px] text-slate-500">Verification</span>
+                  <span className="text-[13px] font-bold" style={{ color: student.verificationScore >= 85 ? "#059669" : student.verificationScore >= 70 ? "#d97706" : "#dc2626" }}>
+                    {student.verificationScore}%
+                  </span>
                 </div>
               </div>
             )
@@ -88,14 +143,10 @@ export function StudentPortal() {
       }
       sidebar={
         <nav className="space-y-1">
-          <div className="mb-2 px-2 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">Student</div>
+          <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Student Navigation</div>
           {tabs.map((t) => (
-            <NavItem key={t.id} active={tab === t.id} onClick={() => setTab(t.id)} icon={t.icon} label={t.label} />
+            <NavItem key={t.id} active={tab === t.id} onClick={() => handleTabChange(t.id)} icon={t.icon} label={t.label} />
           ))}
-          <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.02] p-3">
-            <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-white"><GraduationCap className="h-3.5 w-3.5 text-[var(--drishti-blue)]" /> Hackathon Demo Tip</div>
-            <p className="text-[10.5px] leading-relaxed text-[var(--drishti-sub)]">Switch to Mayur or Viraj to see different verification scores & skill gaps.</p>
-          </div>
         </nav>
       }
     >

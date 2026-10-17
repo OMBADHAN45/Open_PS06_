@@ -117,8 +117,8 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-white sm:text-2xl">Jobs — AI JD Parser & Skill Normalizer</h1>
-        <p className="text-[13px] text-[var(--drishti-sub)]">
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Jobs — AI JD Parser & Skill Normalizer</h1>
+        <p className="text-[13px] text-slate-500">
           Paste a raw Job Description (from WhatsApp, email, or any portal). DRISHTI parses it,
           normalizes messy skill variants (NodeJS → Node.js, react.js → React) and unifies
           duplicate applicants from multiple sources.
@@ -127,23 +127,23 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         {/* LEFT — Post New Job */}
-        <Card className="drishti-card border-white/10 bg-white/[0.03]">
+        <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
           <CardContent className="space-y-4 p-4 sm:p-6">
             <div className="flex items-center gap-2">
-              <Wand2 className="h-5 w-5 text-[var(--drishti-gold)]" />
-              <h2 className="text-base font-bold text-white">Post New Job</h2>
+              <Wand2 className="h-5 w-5 text-indigo-600" />
+              <h2 className="text-base font-bold text-slate-900">Post New Job</h2>
             </div>
 
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <label className="text-[12px] font-semibold text-[var(--drishti-sub)]">
+                <label className="text-[12px] font-semibold text-slate-600">
                   Raw Job Description
                 </label>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={handleSample}
-                  className="border-[var(--drishti-gold)]/40 bg-[var(--drishti-gold)]/10 text-[var(--drishti-gold)] hover:bg-[var(--drishti-gold)]/20"
+                  className="border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 shadow-2xs"
                 >
                   <FileText className="h-3 w-3" />
                   Paste Sample Raw JD
@@ -153,14 +153,14 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
                 value={raw}
                 onChange={(e) => setRaw(e.target.value)}
                 placeholder="Paste raw JD here (company, role, CTC, eligibility, required/preferred skills)..."
-                className="min-h-[180px] resize-y border-white/10 bg-black/30 font-mono text-[12px] text-white placeholder:text-white/30 focus-visible:ring-[var(--drishti-blue)]"
+                className="min-h-[180px] resize-y border-slate-200 bg-white font-mono text-[12px] text-slate-900 placeholder:text-slate-400 focus-visible:ring-indigo-500 shadow-2xs"
               />
             </div>
 
             <div className="flex flex-wrap gap-2">
               <Button
                 onClick={handleParse}
-                className="bg-gradient-to-r from-[var(--drishti-gold)] to-[var(--drishti-blue)] text-[#06101f] hover:brightness-110"
+                className="bg-gradient-to-r from-indigo-500 to-sky-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200"
               >
                 <Sparkles className="h-4 w-4" />
                 Parse JD with AI
@@ -169,7 +169,7 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
                 onClick={handlePublish}
                 disabled={!parsed}
                 variant="outline"
-                className="border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-40"
+                className="border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:opacity-40 shadow-2xs"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Publish Job
@@ -178,8 +178,8 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
 
             {/* Parsed result */}
             {parsed && (
-              <div className="rounded-lg border border-[var(--drishti-gold)]/30 bg-[var(--drishti-gold)]/[0.04] p-4">
-                <div className="mb-3 text-[11px] uppercase tracking-wider text-[var(--drishti-gold)]">
+              <div className="rounded-lg border border-indigo-200 bg-indigo-50/40 p-4">
+                <div className="mb-3 text-[11px] uppercase font-bold tracking-wider text-indigo-600">
                   ✓ Parsed Structured JD
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[12px]">
@@ -191,24 +191,24 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div>
-                    <div className="mb-1 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
+                    <div className="mb-1 text-[10px] uppercase font-bold tracking-wider text-slate-500">
                       Required ({parsed.requiredSkills.length})
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {parsed.requiredSkills.map((s) => (
-                        <Badge key={s} variant="outline" className="border-[var(--drishti-blue)]/40 bg-[var(--drishti-blue)]/10 text-[var(--drishti-blue)]">
+                        <Badge key={s} variant="outline" className="border-sky-200 bg-sky-50 text-sky-700 shadow-2xs font-semibold">
                           {s}
                         </Badge>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <div className="mb-1 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
+                    <div className="mb-1 text-[10px] uppercase font-bold tracking-wider text-slate-500">
                       Preferred ({parsed.preferredSkills.length})
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {parsed.preferredSkills.map((s) => (
-                        <Badge key={s} variant="outline" className="border-[var(--drishti-amber)]/40 bg-[var(--drishti-amber)]/10 text-[var(--drishti-amber)]">
+                        <Badge key={s} variant="outline" className="border-amber-200 bg-amber-50 text-amber-700 shadow-2xs font-semibold">
                           {s}
                         </Badge>
                       ))}
@@ -220,18 +220,18 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
 
             {/* Skill Normalization Table */}
             {normalizedRows.length > 0 && (
-              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
-                <div className="mb-2 flex items-center gap-2 text-[12px] font-semibold text-white">
-                  <Merge className="h-3.5 w-3.5 text-[var(--drishti-blue)]" />
+              <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3">
+                <div className="mb-2 flex items-center gap-2 text-[12px] font-semibold text-slate-900">
+                  <Merge className="h-3.5 w-3.5 text-indigo-600" />
                   Auto Skill Normalization
-                  <span className="rounded-full bg-[var(--drishti-blue)]/15 px-2 py-0.5 text-[10px] text-[var(--drishti-blue)]">
+                  <span className="rounded-full bg-indigo-100 border border-indigo-200 px-2 py-0.5 text-[10px] font-semibold text-indigo-700">
                     {normalizedRows.length} canonical
                   </span>
                 </div>
                 <div className="max-h-60 overflow-y-auto">
                   <table className="w-full text-[11px]">
                     <thead>
-                      <tr className="border-b border-white/10 text-left text-[var(--drishti-sub)]">
+                      <tr className="border-b border-slate-200 text-left text-slate-500">
                         <th className="px-2 py-1.5 font-medium">Raw Variant(s)</th>
                         <th className="px-2 py-1.5 font-medium">Canonical Tag</th>
                         <th className="px-2 py-1.5 font-medium">Action</th>
@@ -239,30 +239,30 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
                     </thead>
                     <tbody>
                       {normalizedRows.map((row) => (
-                        <tr key={row.canonical} className="border-b border-white/5">
+                        <tr key={row.canonical} className="border-b border-slate-100">
                           <td className="px-2 py-1.5">
-                            <span className="font-mono text-[var(--drishti-sub)]">{row.raw}</span>
+                            <span className="font-mono text-slate-600">{row.raw}</span>
                             {row.mergedWith.map((m) => (
-                              <span key={m} className="ml-1 font-mono text-[var(--drishti-sub)]/70">
+                              <span key={m} className="ml-1 font-mono text-slate-400">
                                 + {m}
                               </span>
                             ))}
                           </td>
                           <td className="px-2 py-1.5">
-                            <span className="font-semibold text-[var(--drishti-blue)]">{row.canonical}</span>
+                            <span className="font-semibold text-indigo-600">{row.canonical}</span>
                           </td>
                           <td className="px-2 py-1.5">
                             {row.mergedWith.length > 0 ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                                 <Merge className="h-2.5 w-2.5" />
                                 merged {1 + row.mergedWith.length} → 1
                               </span>
                             ) : row.changed ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-[var(--drishti-blue)]/30 bg-[var(--drishti-blue)]/10 px-2 py-0.5 text-[10px] text-[var(--drishti-blue)]">
+                              <span className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-700">
                                 normalized
                               </span>
                             ) : (
-                              <span className="text-[10px] text-[var(--drishti-sub)]">as-is</span>
+                              <span className="text-[10px] text-slate-400">as-is</span>
                             )}
                           </td>
                         </tr>
@@ -278,9 +278,9 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
         {/* RIGHT — Existing jobs */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white">
+            <h2 className="text-base font-bold text-slate-900">
               Posted Jobs
-              <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[11px] text-[var(--drishti-sub)]">
+              <span className="ml-2 rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
                 {jobs.length}
               </span>
             </h2>
@@ -300,11 +300,11 @@ export function JobsTab({ onGoCandidates }: { onGoCandidates: () => void }) {
 function Field({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div>
-      <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
+      <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-slate-400">
         {icon}
         {label}
       </div>
-      <div className="text-[13px] font-semibold text-white">{value}</div>
+      <div className="text-[13px] font-semibold text-slate-900">{value}</div>
     </div>
   );
 }
@@ -312,18 +312,18 @@ function Field({ icon, label, value }: { icon: React.ReactNode; label: string; v
 function JobCard({ job }: { job: JobOpening }) {
   const multiSource = job.sources.length > 1;
   return (
-    <Card className="drishti-card border-white/10 bg-white/[0.03]">
+    <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="truncate text-[14px] font-bold text-white">{job.role}</span>
-              <span className="text-[11px] text-[var(--drishti-sub)]">@</span>
-              <span className="truncate text-[12px] font-semibold text-[var(--drishti-gold)]">
+              <span className="truncate text-[14px] font-bold text-slate-900">{job.role}</span>
+              <span className="text-[11px] text-slate-400">@</span>
+              <span className="truncate text-[12px] font-semibold text-indigo-600">
                 {job.company}
               </span>
             </div>
-            <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-[var(--drishti-sub)]">
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-500">
               <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{job.location}</span>
               <span className="inline-flex items-center gap-1"><IndianRupee className="h-3 w-3" />{job.ctc}</span>
               <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{job.eligibility}</span>
@@ -333,10 +333,10 @@ function JobCard({ job }: { job: JobOpening }) {
 
         {/* Multi-source dedup banner */}
         {multiSource && (
-          <div className="mt-3 flex items-start gap-2 rounded-lg border border-[var(--drishti-amber)]/30 bg-[var(--drishti-amber)]/[0.06] p-2.5 text-[11px]">
-            <Merge className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--drishti-amber)]" />
-            <span className="text-[var(--drishti-sub)]">
-              <span className="font-semibold text-[var(--drishti-amber)]">
+          <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-[11px]">
+            <Merge className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600" />
+            <span className="text-slate-600">
+              <span className="font-semibold text-amber-700">
                 ⚠ {job.sources.length} sources merged
               </span>{" "}
               ({job.sources.join(" + ")}) — applicant pool unified
@@ -346,24 +346,24 @@ function JobCard({ job }: { job: JobOpening }) {
 
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           <div>
-            <div className="mb-1 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
+            <div className="mb-1 text-[10px] uppercase font-bold tracking-wider text-slate-400">
               Required
             </div>
             <div className="flex flex-wrap gap-1">
               {job.requiredSkills.map((s) => (
-                <Badge key={s} variant="outline" className="border-[var(--drishti-blue)]/40 bg-[var(--drishti-blue)]/10 text-[var(--drishti-blue)]">
+                <Badge key={s} variant="outline" className="border-sky-200 bg-sky-50 text-sky-700 shadow-2xs font-semibold">
                   {s}
                 </Badge>
               ))}
             </div>
           </div>
           <div>
-            <div className="mb-1 text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
+            <div className="mb-1 text-[10px] uppercase font-bold tracking-wider text-slate-400">
               Preferred
             </div>
             <div className="flex flex-wrap gap-1">
               {job.preferredSkills.map((s) => (
-                <Badge key={s} variant="outline" className="border-[var(--drishti-amber)]/40 bg-[var(--drishti-amber)]/10 text-[var(--drishti-amber)]">
+                <Badge key={s} variant="outline" className="border-amber-200 bg-amber-50 text-amber-700 shadow-2xs font-semibold">
                   {s}
                 </Badge>
               ))}
@@ -371,20 +371,20 @@ function JobCard({ job }: { job: JobOpening }) {
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-3">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex flex-wrap gap-1">
             {job.sources.map((src) => (
-              <span key={src} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-[var(--drishti-sub)]">
+              <span key={src} className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-600 font-medium">
                 {src}
               </span>
             ))}
             {typeof job.alumniCount === "number" && job.alumniCount > 0 && (
-              <span className="rounded-full border border-[var(--drishti-emerald)]/30 bg-[var(--drishti-emerald)]/10 px-2 py-0.5 text-[10px] text-[var(--drishti-emerald)]">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] text-emerald-700 font-medium">
                 {job.alumniCount} alumni
               </span>
             )}
           </div>
-          <span className="text-[10px] text-[var(--drishti-sub)]/70">
+          <span className="text-[10px] text-slate-400">
             {new Date(job.postedAt).toLocaleDateString()}
           </span>
         </div>

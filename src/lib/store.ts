@@ -20,6 +20,16 @@ import {
 } from "./mock-data";
 import { computeFit, DEFAULT_WEIGHTS, type WeightConfig } from "./fit-score";
 import { normalizeSkill } from "./taxonomy";
+import {
+  type StudentProfilePayload,
+  createDefaultOnboardingPayload,
+  createPayloadFromStudent,
+} from "./onboarding-types";
+import {
+  type CompanyOnboardingPayload,
+  createDefaultCompanyPayload,
+} from "./company-types";
+import { type StudentSignupPayload } from "./student-signup-types";
 
 export type View = "landing" | "student" | "industry" | "tpo";
 
@@ -50,6 +60,27 @@ interface AppState {
   // active student (for student portal demo)
   activeStudentId: string;
   setActiveStudent: (id: string) => void;
+
+  // Student Onboarding Pipeline payload
+  onboardingPayload: StudentProfilePayload;
+  setOnboardingPayload: (p: StudentProfilePayload) => void;
+  onboardingModalOpen: boolean;
+  setOnboardingModalOpen: (open: boolean) => void;
+
+  // New Student Signup & Onboarding Pipeline
+  studentSignupPayload: StudentSignupPayload | null;
+  setStudentSignupPayload: (p: StudentSignupPayload | null) => void;
+  studentOnboardingModalOpen: boolean;
+  setStudentOnboardingModalOpen: (open: boolean) => void;
+  pendingAssessmentQueue: string[];
+  setPendingAssessmentQueue: (skills: string[]) => void;
+  onboardStudent: (payload: StudentSignupPayload) => void;
+
+  // Company / Recruiter Onboarding Pipeline payload
+  companyPayload: CompanyOnboardingPayload;
+  setCompanyPayload: (p: CompanyOnboardingPayload) => void;
+  companyOnboardingOpen: boolean;
+  setCompanyOnboardingOpen: (open: boolean) => void;
 
   students: StudentProfile[];
   jobs: JobOpening[];
@@ -231,53 +262,191 @@ function parseJD(raw: string): JobParseResult {
 
 const SAMPLE_RAW_SOURCES = [
   {
-    id: "rs_1",
-    company: "Finnable Credit",
-    role: "Backend Engineer",
-    location: "Pune, India",
-    ctc: "12 LPA",
-    source: "WhatsApp Forward",
-    rawText: "Urgent hiring Finnable Credit Backend Engineer Pune Nodejs Postgres Redis 12 LPA",
+    id: "rs_neural_1",
+    company: "Neural Tech",
+    role: "SDE-1 (Backend & Distributed Systems)",
+    location: "Bengaluru, India",
+    ctc: "16 LPA",
+    source: "Partner Portal",
+    rawText: "Neural Tech is hiring SDE-1 Backend Engineers in Bengaluru. Requirements: Python, Node.js, PostgreSQL, Redis caching, microservices. CTC: 16 LPA. BE/BTech 2026.",
     postedAt: Date.now() - 2 * 86400000,
   },
   {
-    id: "rs_2",
-    company: "FINNABLE CREDIT",
-    role: "Back-end Engineer",
-    location: "Pune",
-    ctc: "12 LPA",
+    id: "rs_neural_2",
+    company: "NEURAL TECH",
+    role: "SDE-1 Backend Engineer",
+    location: "Bengaluru, India",
+    ctc: "16 LPA",
+    source: "WhatsApp Forward",
+    rawText: "Urgent hiring: Neural Tech hiring SDE-1 Backend Engineer Bengaluru Python Nodejs Postgres Redis 16 LPA 2026 batch forward to interested folks",
+    postedAt: Date.now() - 2 * 86400000 + 1800000,
+  },
+  {
+    id: "rs_neural_3",
+    company: "Neural Tech Inc",
+    role: "SDE 1 - Distributed Systems & Backend",
+    location: "Bengaluru",
+    ctc: "16 LPA",
     source: "Alumni Referral",
-    rawText: "Finnable Credit hiring backend engineer Pune Node.js PostgreSQL Redis cache 12LPA",
+    rawText: "Alumni referral opportunity at Neural Tech: SDE-1 Backend & Distributed Systems Bangalore Python Node.js PostgreSQL Redis. CTC 16 LPA.",
     postedAt: Date.now() - 2 * 86400000 + 3600000,
   },
   {
-    id: "rs_3",
-    company: "Finnable Credit",
-    role: "Backend Engineer",
-    location: "Pune, India",
-    ctc: "12 LPA",
-    source: "Partner Portal",
-    rawText: "Backend Engineer at Finnable Credit Pune Node Postgres Redis 12 LPA",
-    postedAt: Date.now() - 2 * 86400000 + 7200000,
-  },
-  {
-    id: "rs_4",
-    company: "Novos Labs",
-    role: "Full Stack Engineer",
-    location: "Remote",
+    id: "rs_acme_1",
+    company: "Acme Corp",
+    role: "Full Stack Engineer (React & TypeScript)",
+    location: "Pune / Remote",
     ctc: "14 LPA",
     source: "Partner Portal",
-    rawText: "Novos Labs Full Stack Engineer React Node Postgres 14 LPA Remote",
+    rawText: "Acme Corp hiring Full Stack Engineer React TypeScript Node.js PostgreSQL 14 LPA Pune Remote",
     postedAt: Date.now() - 3 * 86400000,
+  },
+  {
+    id: "rs_acme_2",
+    company: "Acme Corporation",
+    role: "Full Stack Developer (React)",
+    location: "Remote (India)",
+    ctc: "14 LPA",
+    source: "Alumni Referral",
+    rawText: "Acme Corp alumni referral: Full Stack Developer React TypeScript Node.js 14 LPA",
+    postedAt: Date.now() - 3 * 86400000 + 7200000,
+  },
+  {
+    id: "rs_finserve_1",
+    company: "FinServe Technologies",
+    role: "High-Concurrency Backend Engineer",
+    location: "Mumbai, India",
+    ctc: "18 LPA",
+    source: "Partner Portal",
+    rawText: "FinServe Technologies hiring High-Concurrency Backend Engineer Mumbai Node.js PostgreSQL Redis 18 LPA",
+    postedAt: Date.now() - 1 * 86400000,
   },
 ];
 
 export const useAppStore = create<AppState>((set, get) => ({
   view: "landing",
-  setView: (v) => set({ view: v }),
+  setView: (v) => {
+    set({ view: v });
+    if (typeof window !== "undefined") {
+      const targetPath = v === "landing" ? "/" : `/${v}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ view: v }, "", targetPath);
+      }
+    }
+  },
 
   activeStudentId: "stu_om",
-  setActiveStudent: (id) => set({ activeStudentId: id }),
+  setActiveStudent: (id) => {
+    const st = get().students.find((s) => s.id === id);
+    if (st) {
+      set({ activeStudentId: id, onboardingPayload: createPayloadFromStudent(st) });
+    } else {
+      set({ activeStudentId: id });
+    }
+  },
+
+  onboardingPayload: createDefaultOnboardingPayload(),
+  setOnboardingPayload: (p) => set({ onboardingPayload: p }),
+  onboardingModalOpen: false,
+  setOnboardingModalOpen: (open) => set({ onboardingModalOpen: open }),
+
+  studentSignupPayload: null,
+  setStudentSignupPayload: (p) => set({ studentSignupPayload: p }),
+  studentOnboardingModalOpen: false,
+  setStudentOnboardingModalOpen: (open) => set({ studentOnboardingModalOpen: open }),
+  pendingAssessmentQueue: [],
+  setPendingAssessmentQueue: (skills) => set({ pendingAssessmentQueue: skills }),
+
+  onboardStudent: (payload) => {
+    const { profileData, pendingSkills } = payload;
+    const newStudentId = "stu_" + Math.random().toString(36).slice(2, 9);
+
+    const newStudent: StudentProfile = {
+      id: newStudentId,
+      name: profileData.fullName,
+      roll: "PRN-2022-" + Math.floor(1000 + Math.random() * 9000),
+      branch: profileData.education.college.branch,
+      batch: String(profileData.education.college.gradYear),
+      cgpa: profileData.education.college.cgpa,
+      githubUser: profileData.links.github.replace(/^https?:\/\/github\.com\//, "").replace(/\/$/, ""),
+      reposScanned: 0,
+      verificationScore: 0,
+      avatarColor: "#06b6d4",
+      skills: [], // CRITICAL: Selected skills NOT added to active profile upon signup
+      evidence: [],
+      assessments: [],
+      projects: [],
+      personalEmail: profileData.personalEmail,
+      phone: profileData.phone,
+      bio: profileData.bio,
+      location: profileData.location,
+      education: profileData.education,
+      professionalStatus: profileData.professionalStatus,
+      employmentDetails: profileData.employmentDetails,
+      links: profileData.links,
+      pendingAssessmentQueue: pendingSkills,
+    };
+
+    const scrubbedItems = pendingSkills.map((sk) => ({
+      skill: sk,
+      reason: `Queued in Pending Assessment Queue. Unverified until proctored test completed.`,
+      status: "unverified" as const,
+    }));
+
+    const newOnboardingPayload: StudentProfilePayload = {
+      fullName: profileData.fullName,
+      email: profileData.personalEmail,
+      rollNumber: newStudent.roll,
+      department: profileData.education.college.branch,
+      gradYear: profileData.education.college.gradYear,
+      tenth: {
+        schoolName: profileData.education.tenth.schoolName || "Secondary School",
+        board: profileData.education.tenth.board,
+        passingYear: profileData.education.tenth.year,
+        percentageOrCgpa: profileData.education.tenth.score,
+      },
+      twelfth: {
+        collegeName: profileData.education.twelfth.collegeName || "Junior College",
+        board: profileData.education.twelfth.board,
+        passingYear: profileData.education.twelfth.year,
+        percentage: profileData.education.twelfth.score,
+      },
+      engineering: {
+        collegeName: profileData.education.college.name,
+        sgpas: [profileData.education.college.cgpa, profileData.education.college.cgpa, profileData.education.college.cgpa, 0, 0, 0, 0, 0],
+        cgpa: profileData.education.college.cgpa,
+        activeBacklogs: 0,
+      },
+      codingEcosystem: {
+        githubUrl: profileData.links.github,
+        leetcodeUrl: profileData.links.leetcode || "",
+        hackerrankUrl: profileData.links.hackerrank || "",
+        codechefUrl: profileData.links.codeforces || "",
+        portfolioUrl: profileData.links.portfolio || "",
+      },
+      claimedSkills: [], // EXCEPTION: NOT added to active resume upon signup
+      evidenceLedger: {
+        verifiedSkills: [],
+        scrubbedSkills: scrubbedItems,
+      },
+      submittedAt: new Date().toISOString(),
+    };
+
+    set((state) => ({
+      students: [newStudent, ...state.students],
+      activeStudentId: newStudentId,
+      studentSignupPayload: payload,
+      pendingAssessmentQueue: pendingSkills,
+      onboardingPayload: newOnboardingPayload,
+      studentOnboardingModalOpen: false,
+      view: "student",
+    }));
+  },
+
+  companyPayload: createDefaultCompanyPayload(),
+  setCompanyPayload: (p) => set({ companyPayload: p }),
+  companyOnboardingOpen: false,
+  setCompanyOnboardingOpen: (open) => set({ companyOnboardingOpen: open }),
 
   students: STUDENTS,
   jobs: JOBS,

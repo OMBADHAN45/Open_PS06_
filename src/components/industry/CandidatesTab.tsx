@@ -48,6 +48,8 @@ import {
   ShieldCheck,
   Database,
   Filter,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import type { StudentProfile, JobOpening, GitHubEvidence, AssessmentEvidence, ProjectEvidence } from "@/lib/mock-data";
 
@@ -88,6 +90,7 @@ export function CandidatesTab() {
     verifiedDocker: false,
   });
   const [compareOpen, setCompareOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const selectedJob: JobOpening | undefined = jobs.find((j) => j.id === selectedJobId) ?? jobs[0];
 
@@ -134,25 +137,25 @@ export function CandidatesTab() {
     <div className="space-y-6">
       {/* Heading */}
       <div>
-        <h1 className="text-xl font-bold text-white sm:text-2xl">
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
           Candidates — Ranked Leaderboard
         </h1>
-        <p className="text-[13px] text-[var(--drishti-sub)]">
+        <p className="text-[13px] text-slate-500">
           Evidence-backed ranking. Adjust weights to see real fit shift — every score is backed by
           GitHub commits, proctored tests, and faculty rubrics.
         </p>
       </div>
 
       {/* Weight sliders */}
-      <Card className="drishti-card border-white/10 bg-white/[0.03]">
+      <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <CardContent className="p-4 sm:p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-white">Interactive Fit Weight Sliders</h2>
+            <h2 className="text-base font-bold text-slate-900">Interactive Fit Weight Sliders</h2>
             <Button
               size="sm"
               variant="ghost"
               onClick={resetWeights}
-              className="text-[var(--drishti-sub)] hover:text-white"
+              className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
             >
               ↺ Reset to default
             </Button>
@@ -179,12 +182,12 @@ export function CandidatesTab() {
             />
           </div>
 
-          <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-3 font-mono text-[12px] text-[var(--drishti-sub)]">
-            <span className="text-[var(--drishti-gold)]">Fit</span> ={" "}
-            <span className="text-[var(--drishti-blue)]">{(weights.requiredWeight).toFixed(2)}</span>·reqRatio +{" "}
-            <span className="text-[var(--drishti-amber)]">{(weights.preferredWeight).toFixed(2)}</span>·prefRatio +{" "}
-            <span className="text-[var(--drishti-gold)]">{(weights.projectWeight).toFixed(2)}</span>·projectFactor
-            <span className="ml-2 text-white/40">
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/80 p-3 font-mono text-[12px] text-slate-600">
+            <span className="font-semibold text-amber-600">Fit</span> ={" "}
+            <span className="font-semibold text-sky-600">{(weights.requiredWeight).toFixed(2)}</span>·reqRatio +{" "}
+            <span className="font-semibold text-amber-600">{(weights.preferredWeight).toFixed(2)}</span>·prefRatio +{" "}
+            <span className="font-semibold text-indigo-600">{(weights.projectWeight).toFixed(2)}</span>·projectFactor
+            <span className="ml-2 text-slate-400">
               (normalized internally so sliders don't need to sum to 1)
             </span>
           </div>
@@ -192,15 +195,15 @@ export function CandidatesTab() {
       </Card>
 
       {/* Job picker + evidence filters */}
-      <Card className="drishti-card border-white/10 bg-white/[0.03]">
+      <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
         <CardContent className="space-y-4 p-4 sm:p-6">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[12px] font-semibold text-[var(--drishti-sub)]">Rank candidates against:</span>
+            <span className="text-[12px] font-semibold text-slate-600">Rank candidates against:</span>
             <Select value={selectedJobId} onValueChange={setSelectedJobId}>
-              <SelectTrigger className="h-9 w-[280px] border-white/15 bg-black/40 text-white">
+              <SelectTrigger className="h-9 w-[280px] border-slate-200 bg-white text-slate-900 shadow-2xs">
                 <SelectValue placeholder="Select a job" />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#0a0f1c] text-white">
+              <SelectContent className="border-slate-200 bg-white text-slate-900 shadow-lg">
                 {jobs.map((j) => (
                   <SelectItem key={j.id} value={j.id}>
                     {j.role} @ {j.company}
@@ -208,13 +211,13 @@ export function CandidatesTab() {
                 ))}
               </SelectContent>
             </Select>
-            <span className="ml-auto text-[11px] text-[var(--drishti-sub)]">
-              Showing <span className="font-semibold text-white">{filtered.length}</span> of {students.length} students
+            <span className="ml-auto text-[11px] text-slate-500">
+              Showing <span className="font-semibold text-slate-900">{filtered.length}</span> of {students.length} students
             </span>
           </div>
 
           <div>
-            <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">
+            <div className="mb-2 flex items-center gap-1.5 text-[11px] uppercase font-bold tracking-wider text-slate-400">
               <Filter className="h-3 w-3" />
               Zero-Fluff Evidence Filters
             </div>
@@ -229,16 +232,16 @@ export function CandidatesTab() {
                     aria-pressed={active}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition cursor-pointer ${
                       active
-                        ? "border-[var(--drishti-blue)]/50 bg-[var(--drishti-blue)]/15 text-[var(--drishti-blue)]"
-                        : "border-white/10 bg-white/[0.02] text-[var(--drishti-sub)] hover:border-white/20 hover:text-white"
+                        ? "border-indigo-300 bg-indigo-50 text-indigo-700 shadow-xs"
+                        : "border-slate-200 bg-slate-50/70 text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900"
                     }`}
                   >
                     <span
                       aria-hidden="true"
                       className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
                         active
-                          ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)] text-[#06101f]"
-                          : "border-white/30 bg-black/40"
+                          ? "border-indigo-600 bg-indigo-600 text-white"
+                          : "border-slate-300 bg-white"
                       }`}
                     >
                       {active && <Check className="h-2.5 w-2.5 stroke-[3]" />}
@@ -253,177 +256,385 @@ export function CandidatesTab() {
         </CardContent>
       </Card>
 
-      {/* Leaderboard Table */}
-      <Card className="drishti-card border-white/10 bg-white/[0.03]">
-        <CardContent className="p-0">
-          <div className="max-h-[640px] overflow-auto">
-            <Table>
-              <TableHeader className="sticky top-0 z-10 bg-[#0a0f1c]">
-                <TableRow className="border-white/10 hover:bg-transparent">
-                  <TableHead className="w-[60px] text-[var(--drishti-sub)]">#</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Student</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Fit</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Verified Required</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Skill Gaps</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Proof</TableHead>
-                  <TableHead className="min-w-[260px] text-[var(--drishti-sub)]">AI Explanation</TableHead>
-                  <TableHead className="text-[var(--drishti-sub)]">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((row, idx) => {
-                  const tier = fitTier(row.fit.score);
-                  const isCompared = compareIds.includes(row.student.id);
-                  return (
-                    <TableRow key={row.student.id} className="border-white/5 align-top hover:bg-white/[0.02]">
-                      <TableCell>
-                        <div
-                          className="flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-bold"
+      {/* Pool Header with View Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-1">
+        <div>
+          <h2 className="text-base font-bold text-slate-900">Ranked Candidate Pool</h2>
+          <p className="text-xs text-slate-500">
+            Top matches against <span className="font-semibold text-slate-700">{selectedJob?.role}</span> with verified cryptographic proofs
+          </p>
+        </div>
+        <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => setViewMode("grid")}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              viewMode === "grid"
+                ? "bg-indigo-50 text-indigo-700 shadow-2xs"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            <LayoutGrid className="h-3.5 w-3.5" />
+            Grid View
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("table")}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              viewMode === "table"
+                ? "bg-indigo-50 text-indigo-700 shadow-2xs"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            <List className="h-3.5 w-3.5" />
+            Table View
+          </button>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {filtered.length === 0 && (
+        <Card className="drishti-card border-slate-200/80 bg-white/90 p-12 text-center text-[13px] text-slate-500">
+          No candidates match the current filters. Try loosening the evidence filters.
+        </Card>
+      )}
+
+      {/* Candidate Grid View */}
+      {viewMode === "grid" && filtered.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {filtered.map((row, idx) => {
+            const tier = fitTier(row.fit.score);
+            const isCompared = compareIds.includes(row.student.id);
+
+            return (
+              <div
+                key={row.student.id}
+                className="relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white/90 backdrop-blur-md p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200"
+              >
+                <div>
+                  {/* Top Header: Avatar, Name, Rank & Prominent Top-Right Fit Badge */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative">
+                        <AvatarCircle name={row.student.name} color={row.student.avatarColor} />
+                        <span
+                          className="absolute -top-1 -left-1 flex h-4.5 w-4.5 items-center justify-center rounded-full text-[10px] font-bold shadow-2xs"
                           style={{
-                            color: idx === 0 ? "#06101f" : tier.text,
-                            background: idx === 0 ? "var(--drishti-gold)" : `${tier.text}1a`,
+                            color: idx === 0 ? "#ffffff" : tier.text,
+                            background: idx === 0 ? "#f59e0b" : `${tier.text}18`,
                             border: `1px solid ${tier.text}44`,
                           }}
                         >
                           {idx + 1}
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <div className="truncate text-base font-semibold text-slate-900">
+                          {row.student.name}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <AvatarCircle name={row.student.name} color={row.student.avatarColor} />
-                          <div className="min-w-0">
-                            <div className="truncate text-[13px] font-semibold text-white">
-                              {row.student.name}
-                            </div>
-                            <div className="truncate text-[10px] text-[var(--drishti-sub)]">
-                              {row.student.branch} · CGPA {row.student.cgpa}
-                            </div>
-                          </div>
+                        <div className="truncate text-xs text-slate-500">
+                          {row.student.branch} · CGPA {row.student.cgpa}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <FitScoreBadge score={row.fit.score} />
-                      </TableCell>
-                      <TableCell>
-                        {row.fit.verifiedRequired.length === 0 ? (
-                          <span className="text-[11px] text-[var(--drishti-sub)]">—</span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1">
-                            {row.fit.verifiedRequired.map((s) => (
-                              <span
-                                key={s}
-                                className="inline-flex items-center gap-0.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400"
-                              >
-                                <CheckCircle2 className="h-2.5 w-2.5" />
-                                {s}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {row.fit.missingRequired.length === 0 ? (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] text-[var(--drishti-emerald)]">
-                            <CheckCircle2 className="h-3 w-3" /> none
-                          </span>
-                        ) : (
-                          <div className="flex flex-wrap gap-1">
-                            {row.fit.missingRequired.map((s) => (
-                              <span
-                                key={s}
-                                className="inline-flex items-center gap-0.5 rounded-full border border-red-500/40 bg-red-500/10 px-1.5 py-0.5 text-[10px] font-medium text-red-400"
-                              >
-                                <XCircle className="h-2.5 w-2.5" />
-                                {s}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <ProofIcons student={row.student} />
-                      </TableCell>
-                      <TableCell>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="line-clamp-2 max-w-[260px] cursor-help text-[11px] leading-snug text-[var(--drishti-sub)]">
-                              {row.fit.explanation}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent
-                            side="top"
-                            className="max-w-[360px] border-white/10 bg-[#0a0f1c] text-[12px] text-white"
-                          >
-                            {row.fit.explanation}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1.5">
-                          <Button
-                            size="sm"
-                            onClick={() => openInspector(row.student.id, selectedJob?.id)}
-                            className="bg-[var(--drishti-gold)] text-[#06101f] hover:bg-[var(--drishti-gold)]/90"
-                          >
-                            Inspect
-                            <ArrowRight className="h-3 w-3" />
-                          </Button>
-                          <button
-                            type="button"
-                            onClick={() => toggleCompare(row.student.id)}
-                            aria-pressed={isCompared}
-                            className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-md border px-2 text-[11px] font-medium transition select-none ${
-                              isCompared
-                                ? "border-[var(--drishti-blue)]/50 bg-[var(--drishti-blue)]/15 text-[var(--drishti-blue)]"
-                                : "border-white/15 bg-white/[0.02] text-[var(--drishti-sub)] hover:text-white"
-                            }`}
-                          >
+                      </div>
+                    </div>
+
+                    {/* Prominent Color-Coded Fit Badge in Top-Right */}
+                    <FitScoreBadge score={row.fit.score} />
+                  </div>
+
+                  {/* Target Job Pill & Proof Counters */}
+                  <div className="mt-3.5 flex flex-wrap items-center justify-between gap-1.5 border-t border-slate-100 pt-3">
+                    <div className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                      <span>Target:</span>
+                      <span className="font-semibold text-slate-700 truncate max-w-[140px]">
+                        {selectedJob?.role}
+                      </span>
+                    </div>
+                    <ProofIcons student={row.student} />
+                  </div>
+
+                  {/* Verified Required Skills & Gaps */}
+                  <div className="mt-3 space-y-2">
+                    {row.fit.verifiedRequired.length > 0 && (
+                      <div className="space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-700">
+                          Verified Required Skills
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {row.fit.verifiedRequired.slice(0, 4).map((s) => (
                             <span
-                              aria-hidden="true"
-                              className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
+                              key={s}
+                              className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10.5px] font-medium text-emerald-700"
+                            >
+                              <CheckCircle2 className="h-2.5 w-2.5" />
+                              {s}
+                            </span>
+                          ))}
+                          {row.fit.verifiedRequired.length > 4 && (
+                            <span className="text-[10px] font-medium text-slate-400 self-center">
+                              +{row.fit.verifiedRequired.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {row.fit.missingRequired.length > 0 ? (
+                      <div className="space-y-1">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-rose-600">
+                          Skill Gaps
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {row.fit.missingRequired.slice(0, 3).map((s) => (
+                            <span
+                              key={s}
+                              className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10.5px] font-medium text-rose-700"
+                            >
+                              <XCircle className="h-2.5 w-2.5" />
+                              {s}
+                            </span>
+                          ))}
+                          {row.fit.missingRequired.length > 3 && (
+                            <span className="text-[10px] font-medium text-slate-400 self-center">
+                              +{row.fit.missingRequired.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+                        <CheckCircle2 className="h-3 w-3" /> Zero required skill gaps
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Truncated AI Match Explanation (2 lines max + Tooltip on Hover) */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="mt-3 cursor-help rounded-lg border border-slate-200 bg-slate-50/70 p-2.5">
+                        <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-indigo-600 mb-0.5">
+                          AI Evidence Rationale
+                        </div>
+                        <p className="line-clamp-2 text-xs leading-relaxed text-slate-600">
+                          {row.fit.explanation}
+                        </p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-[380px] border-slate-200 bg-slate-900 text-xs text-white shadow-xl p-3"
+                    >
+                      <div className="font-semibold text-indigo-300 mb-1">Full AI Evidence Match Analysis</div>
+                      {row.fit.explanation}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+
+                {/* Bottom Action Controls */}
+                <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3">
+                  <Button
+                    size="sm"
+                    onClick={() => openInspector(row.student.id, selectedJob?.id)}
+                    className="flex-1 bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-medium shadow-sm hover:shadow-md hover:from-indigo-600 hover:to-sky-600 transition cursor-pointer text-xs h-8.5"
+                  >
+                    Inspect Proof
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => toggleCompare(row.student.id)}
+                    aria-pressed={isCompared}
+                    className={`flex h-8.5 cursor-pointer items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition select-none ${
+                      isCompared
+                        ? "border-indigo-300 bg-indigo-50 text-indigo-700 shadow-2xs font-semibold"
+                        : "border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 shadow-2xs"
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
+                        isCompared
+                          ? "border-indigo-600 bg-indigo-600 text-white"
+                          : "border-slate-300 bg-white"
+                      }`}
+                    >
+                      {isCompared && <Check className="h-2.5 w-2.5 stroke-[3]" />}
+                    </span>
+                    Compare
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Leaderboard Table View */}
+      {viewMode === "table" && filtered.length > 0 && (
+        <Card className="drishti-card border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
+          <CardContent className="p-0">
+            <div className="max-h-[640px] overflow-auto">
+              <Table>
+                <TableHeader className="sticky top-0 z-10 bg-slate-50/95 border-b border-slate-200 backdrop-blur">
+                  <TableRow className="border-slate-200 hover:bg-transparent">
+                    <TableHead className="w-[60px] text-slate-600 font-semibold">#</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Student</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Fit</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Verified Required</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Skill Gaps</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Proof</TableHead>
+                    <TableHead className="min-w-[260px] text-slate-600 font-semibold">AI Explanation</TableHead>
+                    <TableHead className="text-slate-600 font-semibold">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((row, idx) => {
+                    const tier = fitTier(row.fit.score);
+                    const isCompared = compareIds.includes(row.student.id);
+                    return (
+                      <TableRow key={row.student.id} className="border-slate-100 align-top hover:bg-slate-50/70">
+                        <TableCell>
+                          <div
+                            className="flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-bold"
+                            style={{
+                              color: idx === 0 ? "#ffffff" : tier.text,
+                              background: idx === 0 ? "#f59e0b" : `${tier.text}18`,
+                              border: `1px solid ${tier.text}44`,
+                            }}
+                          >
+                            {idx + 1}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <AvatarCircle name={row.student.name} color={row.student.avatarColor} />
+                            <div className="min-w-0">
+                              <div className="truncate text-[13px] font-semibold text-slate-900">
+                                {row.student.name}
+                              </div>
+                              <div className="truncate text-[10px] text-slate-500">
+                                {row.student.branch} · CGPA {row.student.cgpa}
+                              </div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <FitScoreBadge score={row.fit.score} />
+                        </TableCell>
+                        <TableCell>
+                          {row.fit.verifiedRequired.length === 0 ? (
+                            <span className="text-[11px] text-slate-400">—</span>
+                          ) : (
+                            <div className="flex flex-wrap gap-1">
+                              {row.fit.verifiedRequired.map((s) => (
+                                <span
+                                  key={s}
+                                  className="inline-flex items-center gap-0.5 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 shadow-2xs"
+                                >
+                                  <CheckCircle2 className="h-2.5 w-2.5" />
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {row.fit.missingRequired.length === 0 ? (
+                            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600">
+                              <CheckCircle2 className="h-3 w-3" /> none
+                            </span>
+                          ) : (
+                            <div className="flex flex-wrap gap-1">
+                              {row.fit.missingRequired.map((s) => (
+                                <span
+                                  key={s}
+                                  className="inline-flex items-center gap-0.5 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700 shadow-2xs"
+                                >
+                                  <XCircle className="h-2.5 w-2.5" />
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <ProofIcons student={row.student} />
+                        </TableCell>
+                        <TableCell>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="line-clamp-2 max-w-[260px] cursor-help text-[11px] leading-snug text-slate-600">
+                                {row.fit.explanation}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              className="max-w-[360px] border-slate-200 bg-slate-900 text-[12px] text-white shadow-xl"
+                            >
+                              {row.fit.explanation}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <Button
+                              size="sm"
+                              onClick={() => openInspector(row.student.id, selectedJob?.id)}
+                              className="bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm hover:from-amber-600 hover:to-amber-700 transition"
+                            >
+                              Inspect
+                              <ArrowRight className="h-3 w-3" />
+                            </Button>
+                            <button
+                              type="button"
+                              onClick={() => toggleCompare(row.student.id)}
+                              aria-pressed={isCompared}
+                              className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-md border px-2 text-[11px] font-medium transition select-none ${
                                 isCompared
-                                  ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)] text-[#06101f]"
-                                  : "border-white/30 bg-black/40"
+                                  ? "border-indigo-300 bg-indigo-50 text-indigo-700 shadow-2xs font-semibold"
+                                  : "border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 shadow-2xs"
                               }`}
                             >
-                              {isCompared && <Check className="h-2.5 w-2.5 stroke-[3]" />}
-                            </span>
-                            Compare
-                          </button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {filtered.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={8} className="py-12 text-center text-[12px] text-[var(--drishti-sub)]">
-                      No candidates match the current filters. Try loosening the evidence filters.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                              <span
+                                aria-hidden="true"
+                                className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border transition-colors ${
+                                  isCompared
+                                    ? "border-indigo-600 bg-indigo-600 text-white"
+                                    : "border-slate-300 bg-white"
+                                }`}
+                              >
+                                {isCompared && <Check className="h-2.5 w-2.5 stroke-[3]" />}
+                              </span>
+                              Compare
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Compare bar */}
       {compareIds.length >= 2 && (
-        <div className="fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-full border border-[var(--drishti-blue)]/40 bg-[#0a0f1c]/95 px-4 py-2 shadow-2xl backdrop-blur">
-          <GitCompareArrows className="h-4 w-4 text-[var(--drishti-blue)]" />
-          <span className="text-[12px] text-white">
-            Comparing <span className="font-bold text-[var(--drishti-blue)]">{compareIds.length}</span> candidates
+        <div className="fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-full border border-indigo-200 bg-white/95 px-5 py-2.5 shadow-2xl backdrop-blur">
+          <GitCompareArrows className="h-4 w-4 text-indigo-600" />
+          <span className="text-[12px] text-slate-700">
+            Comparing <span className="font-bold text-indigo-600">{compareIds.length}</span> candidates
           </span>
           <Button
             size="sm"
             onClick={() => setCompareOpen(true)}
-            className="bg-[var(--drishti-blue)] text-[#06101f] hover:bg-[var(--drishti-blue)]/90"
+            className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-700"
           >
             View Matrix
             <ArrowRight className="h-3 w-3" />
           </Button>
-          <button onClick={clearCompare} className="text-[var(--drishti-sub)] hover:text-white">
+          <button onClick={clearCompare} className="text-slate-400 hover:text-slate-700">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -431,13 +642,13 @@ export function CandidatesTab() {
 
       {/* Comparison Matrix Dialog */}
       <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
-        <DialogContent className="max-w-5xl border-white/10 bg-[#0a0f1c] p-0 text-white sm:max-w-5xl">
-          <DialogHeader className="border-b border-white/10 p-5">
-            <DialogTitle className="flex items-center gap-2 text-base">
-              <GitCompareArrows className="h-4 w-4 text-[var(--drishti-blue)]" />
+        <DialogContent className="max-w-5xl border-slate-200 bg-white p-0 text-slate-900 shadow-2xl sm:max-w-5xl">
+          <DialogHeader className="border-b border-slate-200 p-5">
+            <DialogTitle className="flex items-center gap-2 text-base text-slate-900">
+              <GitCompareArrows className="h-4 w-4 text-indigo-600" />
               Side-by-Side Candidate Comparison
             </DialogTitle>
-            <DialogDescription className="text-[var(--drishti-sub)]">
+            <DialogDescription className="text-slate-500">
               Comparing {compareRows.length} candidates against {selectedJob?.role} @ {selectedJob?.company}.
             </DialogDescription>
           </DialogHeader>
@@ -462,10 +673,10 @@ function WeightSlider({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <label className="text-[12px] font-medium text-[var(--drishti-sub)]">{label}</label>
+        <label className="text-[12px] font-medium text-slate-600">{label}</label>
         <span
           className="rounded-full px-2 py-0.5 text-[11px] font-bold"
-          style={{ background: `${accent}1a`, color: accent, border: `1px solid ${accent}44` }}
+          style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}44` }}
         >
           {value}%
         </span>
@@ -476,7 +687,7 @@ function WeightSlider({
         max={100}
         step={5}
         onValueChange={(v) => onChange(v[0])}
-        className="[&_[data-slot=slider-track]]:bg-white/10 [&_[data-slot=slider-range]]:bg-[var(--drishti-gold)] [&_[data-slot=slider-thumb]]:border-[var(--drishti-gold)]"
+        className="[&_[data-slot=slider-track]]:bg-slate-200 [&_[data-slot=slider-range]]:bg-indigo-600 [&_[data-slot=slider-thumb]]:border-indigo-600"
       />
     </div>
   );
@@ -491,31 +702,31 @@ function ProofIcons({ student }: { student: StudentProfile }) {
       {github > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-flex items-center gap-0.5 rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[10px] text-[var(--drishti-blue)]">
+            <span className="inline-flex items-center gap-0.5 rounded border border-sky-200 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700 shadow-2xs">
               <Github className="h-2.5 w-2.5" /> {github}
             </span>
           </TooltipTrigger>
-          <TooltipContent className="bg-[#0a0f1c] text-[11px] text-white">{github} GitHub proofs</TooltipContent>
+          <TooltipContent className="bg-slate-900 text-[11px] text-white">{github} GitHub proofs</TooltipContent>
         </Tooltip>
       )}
       {assess > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-flex items-center gap-0.5 rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[10px] text-[var(--drishti-gold)]">
+            <span className="inline-flex items-center gap-0.5 rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 shadow-2xs">
               <Award className="h-2.5 w-2.5" /> {assess}
             </span>
           </TooltipTrigger>
-          <TooltipContent className="bg-[#0a0f1c] text-[11px] text-white">{assess} proctored assessments</TooltipContent>
+          <TooltipContent className="bg-slate-900 text-[11px] text-white">{assess} proctored assessments</TooltipContent>
         </Tooltip>
       )}
       {proj > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-flex items-center gap-0.5 rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[10px] text-[var(--drishti-emerald)]">
+            <span className="inline-flex items-center gap-0.5 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 shadow-2xs">
               <GraduationCap className="h-2.5 w-2.5" /> {proj}
             </span>
           </TooltipTrigger>
-          <TooltipContent className="bg-[#0a0f1c] text-[11px] text-white">{proj} faculty-evaluated projects</TooltipContent>
+          <TooltipContent className="bg-slate-900 text-[11px] text-white">{proj} faculty-evaluated projects</TooltipContent>
         </Tooltip>
       )}
     </div>
@@ -533,7 +744,7 @@ function ComparisonMatrix({
 }) {
   if (!job || students.length === 0) {
     return (
-      <div className="p-8 text-center text-[12px] text-[var(--drishti-sub)]">
+      <div className="p-8 text-center text-[12px] text-slate-500">
         Select at least 2 candidates to compare.
       </div>
     );
@@ -541,9 +752,9 @@ function ComparisonMatrix({
   return (
     <div className="max-h-[70vh] overflow-auto p-4">
       <table className="w-full text-[12px]">
-        <thead className="sticky top-0 bg-[#0a0f1c]">
+        <thead className="sticky top-0 bg-slate-50 border-b border-slate-200">
           <tr>
-            <th className="w-[140px] px-3 py-2 text-left text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">
+            <th className="w-[140px] px-3 py-2 text-left text-[11px] uppercase font-bold tracking-wider text-slate-500">
               Metric
             </th>
             {students.map((s) => (
@@ -551,15 +762,15 @@ function ComparisonMatrix({
                 <div className="flex items-center gap-2">
                   <AvatarCircle name={s.name} color={s.avatarColor} />
                   <div>
-                    <div className="text-[13px] font-semibold text-white">{s.name}</div>
-                    <div className="text-[10px] text-[var(--drishti-sub)]">{s.branch}</div>
+                    <div className="text-[13px] font-semibold text-slate-900">{s.name}</div>
+                    <div className="text-[10px] text-slate-500">{s.branch}</div>
                   </div>
                 </div>
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-slate-100">
           <CompareRow label="Overall Fit Score">
             {students.map((s) => {
               const fit = computeFit(s, job, weights);
@@ -577,10 +788,10 @@ function ComparisonMatrix({
                 <td key={s.id} className="px-3 py-2">
                   <div className="flex flex-wrap gap-1">
                     {fit.verifiedRequired.length === 0 ? (
-                      <span className="text-[11px] text-[var(--drishti-sub)]">none</span>
+                      <span className="text-[11px] text-slate-400">none</span>
                     ) : (
                       fit.verifiedRequired.map((sk) => (
-                        <span key={sk} className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-400">
+                        <span key={sk} className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                           {sk}
                         </span>
                       ))
@@ -597,10 +808,10 @@ function ComparisonMatrix({
                 <td key={s.id} className="px-3 py-2">
                   <div className="flex flex-wrap gap-1">
                     {fit.missingRequired.length === 0 ? (
-                      <span className="text-[10px] text-[var(--drishti-emerald)]">no gaps</span>
+                      <span className="text-[10px] font-medium text-emerald-600">no gaps</span>
                     ) : (
                       fit.missingRequired.map((sk) => (
-                        <span key={sk} className="rounded-full border border-red-500/40 bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-400">
+                        <span key={sk} className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
                           {sk}
                         </span>
                       ))
@@ -616,22 +827,22 @@ function ComparisonMatrix({
               const sqlA = assess.find((a) => a.skill === "SQL");
               const top = assess.length ? [...assess].sort((a, b) => b.score - a.score)[0] : null;
               return (
-                <td key={s.id} className="px-3 py-2 text-white">
+                <td key={s.id} className="px-3 py-2 text-slate-900">
                   {sqlA ? (
                     <span>
-                      <span className="font-bold">{sqlA.score}/100</span> SQL
+                      <span className="font-bold text-slate-900">{sqlA.score}/100</span> SQL
                       {top && top.skill !== "SQL" && (
-                        <span className="ml-1 text-[10px] text-[var(--drishti-sub)]">
+                        <span className="ml-1 text-[10px] text-slate-400">
                           (top: {top.score} {top.skill})
                         </span>
                       )}
                     </span>
                   ) : top ? (
                     <span>
-                      <span className="font-bold">{top.score}/100</span> {top.skill}
+                      <span className="font-bold text-slate-900">{top.score}/100</span> {top.skill}
                     </span>
                   ) : (
-                    <span className="text-[11px] text-[var(--drishti-sub)]">no assessments</span>
+                    <span className="text-[11px] text-slate-400">no assessments</span>
                   )}
                 </td>
               );
@@ -639,8 +850,8 @@ function ComparisonMatrix({
           </CompareRow>
           <CompareRow label="Verified Projects">
             {students.map((s) => (
-              <td key={s.id} className="px-3 py-2 text-white">
-                {s.projects.length} <span className="text-[10px] text-[var(--drishti-sub)]">(faculty-graded)</span>
+              <td key={s.id} className="px-3 py-2 text-slate-900">
+                {s.projects.length} <span className="text-[10px] text-slate-400">(faculty-graded)</span>
               </td>
             ))}
           </CompareRow>
@@ -650,13 +861,13 @@ function ComparisonMatrix({
               return (
                 <td key={s.id} className="px-3 py-2">
                   {s.assessments.length === 0 ? (
-                    <span className="text-[11px] text-[var(--drishti-sub)]">no tests</span>
+                    <span className="text-[11px] text-slate-400">no tests</span>
                   ) : total === 0 ? (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-400">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                       <ShieldCheck className="h-2.5 w-2.5" /> 0 warnings
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] text-[var(--drishti-amber)]">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
                       ⚠ {total} warning(s)
                     </span>
                   )}
@@ -666,7 +877,7 @@ function ComparisonMatrix({
           </CompareRow>
           <CompareRow label="CGPA">
             {students.map((s) => (
-              <td key={s.id} className="px-3 py-2 text-white">{s.cgpa}</td>
+              <td key={s.id} className="px-3 py-2 text-slate-900 font-medium">{s.cgpa}</td>
             ))}
           </CompareRow>
         </tbody>
@@ -677,8 +888,8 @@ function ComparisonMatrix({
 
 function CompareRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <tr className="border-b border-white/5">
-      <td className="px-3 py-2 text-[11px] font-medium text-[var(--drishti-sub)]">{label}</td>
+    <tr className="border-b border-slate-100">
+      <td className="px-3 py-2 text-[11px] font-medium text-slate-500">{label}</td>
       {children}
     </tr>
   );

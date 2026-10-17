@@ -25,13 +25,13 @@ import {
 } from "lucide-react";
 
 const C = {
-  gold: "#ffe2b2",
-  blue: "#9fe0ff",
-  emerald: "#10b981",
+  gold: "#d97706",
+  blue: "#0284c7",
+  emerald: "#059669",
   crimson: "#ef4444",
   amber: "#f59e0b",
-  violet: "#a78bfa",
-  cyan: "#22d3ee",
+  violet: "#7c3aed",
+  cyan: "#0891b2",
 };
 
 const PIPELINE_COLORS: Record<ApplicationStage, string> = {
@@ -44,12 +44,13 @@ const PIPELINE_COLORS: Record<ApplicationStage, string> = {
 };
 
 const TOOLTIP_STYLE = {
-  backgroundColor: "rgba(8,12,22,0.96)",
-  border: "1px solid rgba(196,214,232,0.18)",
+  backgroundColor: "#ffffff",
+  border: "1px solid #e2e8f0",
   borderRadius: "10px",
-  color: "#fff",
+  color: "#0f172a",
   fontSize: 12,
   padding: "8px 10px",
+  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
 };
 
 function ChartCard({
@@ -68,7 +69,7 @@ function ChartCard({
   height?: number;
 }) {
   return (
-    <div className="drishti-card flex flex-col rounded-2xl p-4">
+    <div className="drishti-card flex flex-col rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.04)]">
       <div className="mb-3 flex items-center gap-2">
         <div
           className="flex h-8 w-8 items-center justify-center rounded-lg"
@@ -77,8 +78,8 @@ function ChartCard({
           {icon}
         </div>
         <div>
-          <h3 className="text-[13px] font-semibold text-white">{title}</h3>
-          {subtitle && <p className="text-[11px] text-[var(--drishti-sub)]">{subtitle}</p>}
+          <h3 className="text-[13px] font-semibold text-slate-900">{title}</h3>
+          {subtitle && <p className="text-[11px] text-slate-500">{subtitle}</p>}
         </div>
       </div>
       <div style={{ width: "100%", height }} className="min-w-0">
@@ -169,14 +170,14 @@ export function DriveAnalyticsTab() {
   return (
     <div className="space-y-5">
       {/* Top KPI strip for analytics */}
-      <div className="drishti-card flex flex-col gap-4 rounded-2xl p-4 md:flex-row md:items-center md:justify-between">
+      <div className="drishti-card flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.04)] md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#9fe0ff]/10 text-[#9fe0ff]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-600">
             <TrendingUp className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-[14px] font-semibold text-white">Drive Analytics</div>
-            <div className="text-[11px] text-[var(--drishti-sub)]">
+            <div className="text-[14px] font-semibold text-slate-900">Drive Analytics</div>
+            <div className="text-[11px] text-slate-500">
               Institution-wide placement intelligence across {jobs.length} active drives
             </div>
           </div>
@@ -199,25 +200,25 @@ export function DriveAnalyticsTab() {
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={offerData} margin={{ top: 10, right: 8, left: -16, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
               <XAxis
                 dataKey="company"
-                tick={{ fill: "#a2a9b8", fontSize: 10 }}
+                tick={{ fill: "#64748b", fontSize: 10 }}
                 tickLine={false}
-                axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                axisLine={{ stroke: "#cbd5e1" }}
                 interval={0}
                 angle={-12}
                 textAnchor="end"
                 height={50}
               />
               <YAxis
-                tick={{ fill: "#a2a9b8", fontSize: 10 }}
+                tick={{ fill: "#64748b", fontSize: 10 }}
                 tickLine={false}
-                axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                axisLine={{ stroke: "#cbd5e1" }}
                 allowDecimals={false}
               />
-              <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#a2a9b8" }} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(99,102,241,0.04)" }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#64748b" }} />
               <Bar dataKey="applications" name="Applications" fill={C.blue} radius={[4, 4, 0, 0]} />
               <Bar dataKey="offers" name="Offers" fill={C.emerald} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -242,14 +243,14 @@ export function DriveAnalyticsTab() {
                 outerRadius={90}
                 innerRadius={48}
                 paddingAngle={2}
-                stroke="rgba(2,6,15,0.6)"
+                stroke="#ffffff"
               >
                 {pipelineData.map((entry) => (
                   <Cell key={entry.name} fill={entry.color} />
                 ))}
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Legend wrapperStyle={{ fontSize: 10, color: "#a2a9b8" }} iconSize={8} />
+              <Legend wrapperStyle={{ fontSize: 10, color: "#64748b" }} iconSize={8} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -268,24 +269,24 @@ export function DriveAnalyticsTab() {
               layout="vertical"
               margin={{ top: 4, right: 12, left: 8, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
               <XAxis
                 type="number"
-                tick={{ fill: "#a2a9b8", fontSize: 10 }}
+                tick={{ fill: "#64748b", fontSize: 10 }}
                 tickLine={false}
-                axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                axisLine={{ stroke: "#cbd5e1" }}
                 allowDecimals={false}
               />
               <YAxis
                 type="category"
                 dataKey="skill"
-                tick={{ fill: "#a2a9b8", fontSize: 10 }}
+                tick={{ fill: "#64748b", fontSize: 10 }}
                 tickLine={false}
-                axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                axisLine={{ stroke: "#cbd5e1" }}
                 width={90}
               />
-              <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#a2a9b8" }} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(99,102,241,0.04)" }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#64748b" }} />
               <Bar dataKey="verified" name="Verified" stackId="a" fill={C.emerald} radius={[0, 0, 0, 0]} />
               <Bar dataKey="unverified" name="Unverified" stackId="a" fill={C.amber} radius={[0, 4, 4, 0]} />
             </BarChart>
@@ -312,7 +313,7 @@ export function DriveAnalyticsTab() {
                     innerRadius={56}
                     outerRadius={84}
                     paddingAngle={3}
-                    stroke="rgba(2,6,15,0.7)"
+                    stroke="#ffffff"
                   >
                     {healthDonutData.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />
@@ -322,8 +323,8 @@ export function DriveAnalyticsTab() {
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-[22px] font-bold text-white">{verificationHealth.pct}%</div>
-                <div className="text-[9px] uppercase tracking-wider text-[var(--drishti-sub)]">Verified</div>
+                <div className="text-[22px] font-bold text-slate-900">{verificationHealth.pct}%</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-500">Verified</div>
               </div>
             </div>
             <div className="flex w-full flex-col gap-1.5 text-[12px] sm:w-auto">
@@ -341,10 +342,10 @@ export function DriveAnalyticsTab() {
 
 function Stat({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-black/30 px-3 py-1.5">
+    <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-2xs">
       <span className="inline-block h-2 w-2 rounded-full" style={{ background: color }} />
-      <span className="text-[11px] text-[var(--drishti-sub)]">{label}</span>
-      <span className="text-[13px] font-bold text-white">{value}</span>
+      <span className="text-[11px] text-slate-500">{label}</span>
+      <span className="text-[13px] font-bold text-slate-900">{value}</span>
     </div>
   );
 }
@@ -354,9 +355,9 @@ function Legend2({ color, label, value }: { color: string; label: string; value:
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2">
         <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: color }} />
-        <span className="text-[11px] text-white/80">{label}</span>
+        <span className="text-[11px] text-slate-600">{label}</span>
       </div>
-      <span className="text-[12px] font-bold text-white">{value}</span>
+      <span className="text-[12px] font-bold text-slate-900">{value}</span>
     </div>
   );
 }

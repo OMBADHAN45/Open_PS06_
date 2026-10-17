@@ -401,7 +401,7 @@ export function ProctoringTab() {
   };
 
   // ---------- RENDER ----------
-  if (!student) return <div className="p-8 text-white">No student selected.</div>;
+  if (!student) return <div className="p-8 text-slate-800">No student selected.</div>;
 
   const verifiedSkills = student.skills.filter((s) => s.status === "verified").map((s) => s.canonical);
   const unverified = student.skills.filter((s) => s.status === "unverified").map((s) => s.canonical);
@@ -410,17 +410,17 @@ export function ProctoringTab() {
   return (
     <div className="space-y-5">
       {/* Header summary */}
-      <div className="drishti-card flex flex-wrap items-center justify-between gap-3 rounded-xl p-4">
+      <div className="drishti-card flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white bg-white/85 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
         <div>
-          <h2 className="text-lg font-bold text-white">🛡️ Assessment & Proctoring</h2>
-          <p className="text-[12.5px] text-[var(--drishti-sub)]">
+          <h2 className="text-lg font-bold text-slate-900">🛡️ Assessment &amp; Proctoring</h2>
+          <p className="text-[12.5px] text-slate-500">
             Take proctored skill assessments. Pass with ≥{PROCTOR_CONFIG.PASS_THRESHOLD}% to unlock the{" "}
-            <span className="text-emerald-400">✓ Verified</span> badge. Fail, and the skill is auto-stripped from your profile.
+            <span className="font-semibold text-emerald-700">✓ Verified</span> badge. Fail, and the skill is auto-stripped from your profile.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className="border-emerald-500/40 bg-emerald-500/10 text-emerald-400">✓ {verifiedSkills.length} Verified</Badge>
-          <Badge className="border-amber-500/40 bg-amber-500/10 text-amber-400">⚠ {unverified.length} Unverified</Badge>
+          <Badge className="border-emerald-200 bg-emerald-100 text-emerald-800 font-semibold shadow-2xs">✓ {verifiedSkills.length} Verified</Badge>
+          <Badge className="border-amber-200 bg-amber-100 text-amber-800 font-semibold shadow-2xs">⚠ {unverified.length} Unverified</Badge>
         </div>
       </div>
 
@@ -433,9 +433,9 @@ export function ProctoringTab() {
       )}
 
       {phase === "loading" && (
-        <div className="drishti-card flex flex-col items-center gap-3 rounded-xl p-12 text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--drishti-blue)]" />
-          <p className="text-white">Requesting camera & microphone, entering fullscreen, loading AI models…</p>
+        <div className="drishti-card flex flex-col items-center gap-3 rounded-xl border border-white bg-white/85 p-12 text-center shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <p className="text-slate-800 font-medium">Requesting camera &amp; microphone, entering fullscreen, loading AI models…</p>
         </div>
       )}
 
@@ -486,15 +486,15 @@ function SkillPicker({
 }) {
   return (
     <div className="space-y-4">
-      <div className="drishti-card rounded-xl p-4">
-        <h3 className="mb-1 text-sm font-semibold text-white">Choose a skill to assess</h3>
-        <p className="mb-3 text-[12px] text-[var(--drishti-sub)]">
+      <div className="drishti-card rounded-xl border border-white bg-white/85 p-5 shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
+        <h3 className="mb-1 text-sm font-bold text-slate-900">Choose a skill to assess</h3>
+        <p className="mb-3 text-[12px] text-slate-500">
           Unverified skills are highlighted in amber. Verified skills can be re-tested to improve your score.
         </p>
         <div className="space-y-3">
           {Object.entries(cats).map(([cat, skills]) => (
             <div key={cat}>
-              <div className="mb-1.5 text-[11px] uppercase tracking-wider text-[var(--drishti-sub)]">{cat}</div>
+              <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">{cat}</div>
               <div className="flex flex-wrap gap-2">
                 {skills.map((s) => {
                   const isVerified = verifiedSkills.includes(s);
@@ -505,10 +505,10 @@ function SkillPicker({
                       key={s}
                       onClick={() => onPick(s)}
                       className={cn(
-                        "rounded-lg border px-3 py-1.5 text-[12px] font-medium transition hover:brightness-125",
-                        isVerified && "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
-                        isUnverified && "border-amber-500/40 bg-amber-500/10 text-amber-400",
-                        !isVerified && !isUnverified && "border-white/15 bg-white/[0.03] text-white hover:bg-white/10"
+                        "rounded-lg border px-3 py-1.5 text-[12px] font-medium transition cursor-pointer shadow-2xs",
+                        isVerified && "border-emerald-200 bg-emerald-100 text-emerald-800 font-semibold hover:bg-emerald-200/80",
+                        isUnverified && "border-amber-200 bg-amber-100 text-amber-800 font-semibold hover:bg-amber-200/80",
+                        !isVerified && !isUnverified && "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-800"
                       )}
                     >
                       {s}
@@ -529,24 +529,24 @@ function SkillPicker({
 /* ---------------- Handshake ---------------- */
 function HandshakeScreen({ skill, onCancel, onStart }: { skill: string; onCancel: () => void; onStart: () => void }) {
   return (
-    <div className="drishti-card mx-auto max-w-2xl rounded-xl p-6">
+    <div className="drishti-card mx-auto max-w-2xl rounded-xl border border-white bg-white/85 p-6 shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
       <div className="mb-4 flex items-center gap-2">
-        <ShieldCheck className="h-5 w-5 text-[var(--drishti-blue)]" />
-        <h3 className="text-base font-bold text-white">Proctored Assessment — {skill}</h3>
+        <ShieldCheck className="h-5 w-5 text-indigo-600" />
+        <h3 className="text-base font-bold text-slate-900">Proctored Assessment — {skill}</h3>
       </div>
-      <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-[12.5px] text-amber-300">
+      <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50/70 p-3 text-[12.5px] text-amber-800 leading-relaxed shadow-2xs">
         <strong>Privacy notice:</strong> This assessment will access your <strong>camera</strong>, <strong>microphone</strong>, and record an <strong>event log</strong> (tab switches, object detections, audio levels, webcam snapshots on warnings). Data stays on-device for this demo.
       </div>
       <div className="mb-4 grid gap-2 sm:grid-cols-2">
         {MONITORS.map((m) => (
-          <div key={m.id} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-[12.5px] text-white">
-            <m.icon className="h-4 w-4 text-[var(--drishti-blue)]" />
-            <span>{m.id}. {m.name}</span>
+          <div key={m.id} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/70 p-2.5 text-[12.5px] text-slate-800 shadow-2xs">
+            <m.icon className="h-4 w-4 text-indigo-600" />
+            <span className="font-medium">{m.id}. {m.name}</span>
           </div>
         ))}
       </div>
-      <div className="mb-5 rounded-lg border border-white/10 bg-black/30 p-3 text-[12.5px] text-[var(--drishti-sub)]">
-        <div className="mb-1 font-semibold text-white">Exam config</div>
+      <div className="mb-5 rounded-lg border border-slate-200 bg-slate-50/70 p-3 text-[12.5px] text-slate-600 shadow-2xs">
+        <div className="mb-1 font-bold text-slate-900">Exam config</div>
         <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5">
           <li>• {PROCTOR_CONFIG.EXAM_MINUTES} minutes</li>
           <li>• 5 randomized MCQs</li>
@@ -557,8 +557,8 @@ function HandshakeScreen({ skill, onCancel, onStart }: { skill: string; onCancel
         </ul>
       </div>
       <div className="flex gap-2">
-        <Button variant="ghost" onClick={onCancel} className="text-[var(--drishti-sub)] hover:text-white">Cancel</Button>
-        <Button onClick={onStart} className="bg-[var(--drishti-blue)] text-[#02060f] hover:bg-[#9fe0ff]">
+        <Button variant="ghost" onClick={onCancel} className="text-slate-500 hover:text-slate-900 cursor-pointer">Cancel</Button>
+        <Button onClick={onStart} className="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-semibold shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all cursor-pointer">
           <Play className="mr-1 h-4 w-4" /> Start Proctored Assessment
         </Button>
       </div>
@@ -601,17 +601,17 @@ function ExamStage({
     <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
       {/* Questions */}
       <div className="space-y-4">
-        <div className="drishti-card flex items-center justify-between rounded-xl p-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
-            <Clock className={cn("h-4 w-4", lowTime ? "text-red-400" : "text-[var(--drishti-blue)]")} />
+        <div className="drishti-card flex items-center justify-between rounded-xl border border-white bg-white/85 p-3.5 shadow-sm">
+          <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            <Clock className={cn("h-4 w-4", lowTime ? "text-rose-600" : "text-indigo-600")} />
             {skill} Assessment
           </div>
-          <div className={cn("font-mono text-lg font-bold", lowTime ? "text-red-400" : "text-white")}>{mm}:{ss}</div>
+          <div className={cn("font-mono text-lg font-bold", lowTime ? "text-rose-600" : "text-slate-900")}>{mm}:{ss}</div>
         </div>
         {questions.map((q, i) => (
-          <div key={q.id} className="drishti-card rounded-xl p-4">
-            <div className="mb-3 text-[13px] text-white">
-              <span className="mr-2 text-[var(--drishti-sub)]">Q{i + 1}.</span>{q.question}
+          <div key={q.id} className="drishti-card rounded-xl border border-white bg-white/85 p-4 shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
+            <div className="mb-3 text-[13px] font-semibold text-slate-900">
+              <span className="mr-2 text-slate-400">Q{i + 1}.</span>{q.question}
             </div>
             <div className="space-y-1.5">
               {q.options.map((opt, oi) => {
@@ -621,36 +621,36 @@ function ExamStage({
                     key={oi}
                     onClick={() => setAnswers({ ...answers, [i]: oi })}
                     className={cn(
-                      "flex w-full items-center gap-2 rounded-lg border p-2.5 text-left text-[12.5px] transition",
-                      sel ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)]/10 text-white" : "border-white/10 bg-white/[0.02] text-[var(--drishti-sub)] hover:bg-white/5"
+                      "flex w-full items-center gap-2.5 rounded-lg border p-2.5 text-left text-[12.5px] transition cursor-pointer shadow-2xs",
+                      sel ? "border-indigo-500 bg-indigo-50/80 text-indigo-950 font-semibold" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                     )}
                   >
-                    <span className={cn("flex h-5 w-5 items-center justify-center rounded-full border text-[11px]", sel ? "border-[var(--drishti-blue)] bg-[var(--drishti-blue)] text-[#02060f]" : "border-white/30")}>
+                    <span className={cn("flex h-5 w-5 items-center justify-center rounded-full border text-[11px] font-bold", sel ? "border-indigo-600 bg-indigo-600 text-white" : "border-slate-300 text-slate-500")}>
                       {String.fromCharCode(65 + oi)}
                     </span>
-                    {opt}
+                    <span>{opt}</span>
                   </button>
                 );
               })}
             </div>
           </div>
         ))}
-        <Button onClick={onSubmit} className="w-full bg-emerald-500 text-[#02060f] hover:bg-emerald-400">
+        <Button onClick={onSubmit} className="w-full bg-emerald-600 text-white font-bold hover:bg-emerald-500 shadow-md shadow-emerald-500/25 cursor-pointer">
           <CheckCircle2 className="mr-1 h-4 w-4" /> Submit Assessment
         </Button>
       </div>
 
       {/* Proctor panel */}
       <div className="space-y-3">
-        <div className="drishti-card rounded-xl p-3">
+        <div className="drishti-card rounded-xl border border-white bg-white/85 p-3.5 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-semibold text-white">Live Webcam + AI Overlay</span>
+            <span className="text-[12px] font-bold text-slate-900">Live Webcam + AI Overlay</span>
             <div className="flex items-center gap-1.5">
-              <span className="live-dot inline-block h-2 w-2 rounded-full bg-red-500" />
-              <span className="text-[10px] uppercase tracking-wider text-red-400">REC</span>
+              <span className="live-dot inline-block h-2 w-2 rounded-full bg-rose-500" />
+              <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600">REC</span>
             </div>
           </div>
-          <div className="proctor-stage relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-black">
+          <div className="proctor-stage relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-slate-950">
             <video ref={videoRef} muted playsInline />
             <canvas ref={canvasRef} />
             <div className="pointer-events-none absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] text-white">
@@ -662,53 +662,53 @@ function ExamStage({
         </div>
 
         {/* Audio meter */}
-        <div className="drishti-card rounded-xl p-3">
+        <div className="drishti-card rounded-xl border border-white bg-white/85 p-3.5 shadow-sm">
           <div className="mb-1.5 flex items-center justify-between text-[12px]">
-            <span className="flex items-center gap-1.5 font-semibold text-white"><Volume2 className="h-3.5 w-3.5 text-[var(--drishti-blue)]" /> Audio Level</span>
-            <span className={cn(audioLevel > PROCTOR_CONFIG.LOUD_LIMIT ? "text-red-400" : "text-[var(--drishti-sub)]")}>{audioLevel}</span>
+            <span className="flex items-center gap-1.5 font-bold text-slate-900"><Volume2 className="h-3.5 w-3.5 text-indigo-600" /> Audio Level</span>
+            <span className={cn("font-semibold", audioLevel > PROCTOR_CONFIG.LOUD_LIMIT ? "text-rose-600" : "text-slate-500")}>{audioLevel}</span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <div className="h-2 overflow-hidden rounded-full bg-slate-100">
             <div
-              className={cn("h-full rounded-full transition-all", audioLevel > PROCTOR_CONFIG.LOUD_LIMIT ? "bg-red-500" : "bg-emerald-500")}
+              className={cn("h-full rounded-full transition-all", audioLevel > PROCTOR_CONFIG.LOUD_LIMIT ? "bg-rose-500" : "bg-emerald-500")}
               style={{ width: `${Math.min(100, audioLevel)}%` }}
             />
           </div>
         </div>
 
         {/* Warning counter */}
-        <div className="drishti-card rounded-xl p-3">
+        <div className="drishti-card rounded-xl border border-white bg-white/85 p-3.5 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-semibold text-white">Warnings</span>
-            <span className={cn("font-mono text-lg font-bold", warnCount >= PROCTOR_CONFIG.MAX_WARNINGS ? "text-red-400" : warnCount > 0 ? "text-amber-400" : "text-emerald-400")}>
+            <span className="text-[12px] font-bold text-slate-900">Warnings</span>
+            <span className={cn("font-mono text-lg font-bold", warnCount >= PROCTOR_CONFIG.MAX_WARNINGS ? "text-rose-600" : warnCount > 0 ? "text-amber-600" : "text-emerald-600")}>
               {warnCount} / {PROCTOR_CONFIG.MAX_WARNINGS}
             </span>
           </div>
           <div className="flex gap-1.5">
             {Array.from({ length: PROCTOR_CONFIG.MAX_WARNINGS }).map((_, i) => (
-              <div key={i} className={cn("h-1.5 flex-1 rounded-full", i < warnCount ? "bg-red-500" : "bg-white/15")} />
+              <div key={i} className={cn("h-1.5 flex-1 rounded-full", i < warnCount ? "bg-rose-500" : "bg-slate-200")} />
             ))}
           </div>
-          <p className="mt-2 text-[10.5px] text-[var(--drishti-sub)]">Auto-submit triggers at {PROCTOR_CONFIG.MAX_WARNINGS} warnings.</p>
+          <p className="mt-2 text-[10.5px] text-slate-500">Auto-submit triggers at {PROCTOR_CONFIG.MAX_WARNINGS} warnings.</p>
         </div>
 
         {/* Event log */}
-        <div className="drishti-card max-h-72 overflow-y-auto rounded-xl p-3">
-          <div className="mb-2 text-[12px] font-semibold text-white">Live Event Log</div>
+        <div className="drishti-card max-h-72 overflow-y-auto rounded-xl border border-white bg-white/85 p-3.5 shadow-sm">
+          <div className="mb-2 text-[12px] font-bold text-slate-900">Live Event Log</div>
           {warnings.length === 0 ? (
-            <p className="text-[11px] text-[var(--drishti-sub)]">No warnings. Stay focused 👀</p>
+            <p className="text-[11px] text-slate-400">No warnings. Stay focused 👀</p>
           ) : (
             <div className="space-y-1.5">
               {[...warnings].reverse().map((w, i) => (
-                <div key={i} className="flex items-start gap-2 rounded border border-white/10 bg-black/30 p-1.5">
+                <div key={i} className="flex items-start gap-2 rounded border border-slate-200 bg-slate-50/70 p-2 shadow-2xs">
                   {w.snapshot ? (
                     <img src={w.snapshot} alt="snap" className="h-8 w-10 shrink-0 rounded object-cover" />
                   ) : (
-                    <div className="flex h-8 w-10 shrink-0 items-center justify-center rounded bg-white/5"><AlertTriangle className="h-3.5 w-3.5 text-amber-400" /></div>
+                    <div className="flex h-8 w-10 shrink-0 items-center justify-center rounded bg-slate-100"><AlertTriangle className="h-3.5 w-3.5 text-amber-500" /></div>
                   )}
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-amber-400">{w.type.replace(/_/g, " ")}</div>
-                    <div className="truncate text-[10.5px] text-[var(--drishti-sub)]">{w.message}</div>
-                    <div className="text-[9.5px] text-[var(--drishti-sub)]">{new Date(w.time).toLocaleTimeString()}</div>
+                    <div className="text-[11px] font-bold text-amber-700">{w.type.replace(/_/g, " ")}</div>
+                    <div className="truncate text-[10.5px] text-slate-600">{w.message}</div>
+                    <div className="text-[9.5px] text-slate-400">{new Date(w.time).toLocaleTimeString()}</div>
                   </div>
                 </div>
               ))}
@@ -733,52 +733,52 @@ function ReportStage({ skill, report, studentName, onRetake }: { skill: string; 
   };
   return (
     <div className="space-y-4">
-      <div className="drishti-card rounded-xl p-6 text-center">
-        <div className={cn("mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full", report.passed ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400")}>
+      <div className="drishti-card rounded-xl border border-white bg-white/85 p-6 text-center shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
+        <div className={cn("mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full shadow-xs", report.passed ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700")}>
           {report.passed ? <CheckCircle2 className="h-9 w-9" /> : <XCircle className="h-9 w-9" />}
         </div>
-        <h3 className="text-2xl font-bold text-white">{report.score}/100</h3>
-        <p className={cn("mt-1 text-sm font-semibold", report.passed ? "text-emerald-400" : "text-red-400")}>
+        <h3 className="text-2xl font-bold text-slate-900">{report.score}/100</h3>
+        <p className={cn("mt-1 text-sm font-bold", report.passed ? "text-emerald-700" : "text-rose-700")}>
           {report.passed ? `PASSED — ${skill} badge unlocked ✓` : `FAILED — ${skill} removed from your profile`}
         </p>
-        <p className="mt-1 text-[12px] text-[var(--drishti-sub)]">
+        <p className="mt-1 text-[12px] text-slate-500">
           {report.correct}/{report.total} correct · {report.events.length} proctoring warning(s)
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <Button onClick={downloadLog} variant="outline" className="border-white/15 text-white hover:bg-white/10">
-            <Download className="mr-1 h-4 w-4" /> Download JSON Log
+          <Button onClick={downloadLog} variant="outline" className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 font-medium shadow-xs cursor-pointer">
+            <Download className="mr-1 h-4 w-4 text-indigo-600" /> Download JSON Log
           </Button>
-          <Button onClick={onRetake} className="bg-[var(--drishti-blue)] text-[#02060f] hover:bg-[#9fe0ff]">
+          <Button onClick={onRetake} className="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-semibold shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/35 cursor-pointer">
             <RotateCcw className="mr-1 h-4 w-4" /> Retake / New Assessment
           </Button>
         </div>
       </div>
 
-      <div className="drishti-card rounded-xl p-4">
-        <h4 className="mb-3 text-sm font-semibold text-white">Proctor Event Log ({report.events.length})</h4>
+      <div className="drishti-card rounded-xl border border-white bg-white/85 p-5 shadow-[0_8px_30px_rgb(79,70,229,0.06)]">
+        <h4 className="mb-3 text-sm font-bold text-slate-900">Proctor Event Log ({report.events.length})</h4>
         {report.events.length === 0 ? (
-          <p className="text-[12px] text-emerald-400">✓ Clean session — zero proctoring violations.</p>
+          <p className="text-[12px] font-semibold text-emerald-700">✓ Clean session — zero proctoring violations.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[12px]">
-              <thead className="text-[10px] uppercase tracking-wider text-[var(--drishti-sub)]">
-                <tr className="border-b border-white/10">
-                  <th className="py-2 pr-2">#</th>
-                  <th className="py-2 pr-2">Type</th>
-                  <th className="py-2 pr-2">Message</th>
-                  <th className="py-2 pr-2">Time</th>
-                  <th className="py-2">Snapshot</th>
+              <thead className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200">
+                  <th className="py-2.5 pr-2">#</th>
+                  <th className="py-2.5 pr-2">Type</th>
+                  <th className="py-2.5 pr-2">Message</th>
+                  <th className="py-2.5 pr-2">Time</th>
+                  <th className="py-2.5">Snapshot</th>
                 </tr>
               </thead>
               <tbody>
                 {report.events.map((e, i) => (
-                  <tr key={i} className="border-b border-white/5 align-top">
-                    <td className="py-2 pr-2 text-[var(--drishti-sub)]">{i + 1}</td>
-                    <td className="py-2 pr-2"><Badge className="border-amber-500/40 bg-amber-500/10 text-amber-400">{e.type.replace(/_/g, " ")}</Badge></td>
-                    <td className="py-2 pr-2 text-white">{e.message}</td>
-                    <td className="py-2 pr-2 text-[var(--drishti-sub)]">{new Date(e.time).toLocaleTimeString()}</td>
-                    <td className="py-2">
-                      {e.snapshot ? <img src={e.snapshot} alt="snap" className="h-10 w-14 rounded object-cover" /> : <span className="text-[var(--drishti-sub)]">—</span>}
+                  <tr key={i} className="border-b border-slate-100 align-top hover:bg-slate-50/60">
+                    <td className="py-2.5 pr-2 text-slate-400">{i + 1}</td>
+                    <td className="py-2.5 pr-2"><Badge className="border-amber-200 bg-amber-100 text-amber-800 font-semibold">{e.type.replace(/_/g, " ")}</Badge></td>
+                    <td className="py-2.5 pr-2 font-medium text-slate-800">{e.message}</td>
+                    <td className="py-2.5 pr-2 text-slate-500">{new Date(e.time).toLocaleTimeString()}</td>
+                    <td className="py-2.5">
+                      {e.snapshot ? <img src={e.snapshot} alt="snap" className="h-10 w-14 rounded object-cover shadow-2xs" /> : <span className="text-slate-400">—</span>}
                     </td>
                   </tr>
                 ))}
