@@ -37,13 +37,22 @@ function scanAllVariants(raw: string): NormalizedRow[] {
   for (const def of SKILL_TAXONOMY) {
     const matchedRaws: string[] = [];
     for (const variant of def.variants) {
-      const re = new RegExp("(^|[^a-z0-9+#])" + variant.replace(/[.\\]/g, (m) => "\\" + m) + "([^a-z0-9+#]|$)", "i");
-      if (re.test(lower)) {
-        // find actual case-preserved raw
-        const m = raw.match(new RegExp(variant.replace(/[.\\]/g, (m) => "\\" + m), "i"));
-        const rawMatch = m ? m[0] : variant;
-        if (!matchedRaws.some((r) => r.toLowerCase() === rawMatch.toLowerCase())) {
-          matchedRaws.push(rawMatch);
+      const escaped = variant.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&");
+      try {
+        const re = new RegExp("(^|[^a-z0-9+#])" + escaped + "([^a-z0-9+#]|$)", "i");
+        if (re.test(lower)) {
+          // find actual case-preserved raw
+          const m = raw.match(new RegExp(escaped, "i"));
+          const rawMatch = m ? m[0] : variant;
+          if (!matchedRaws.some((r) => r.toLowerCase() === rawMatch.toLowerCase())) {
+            matchedRaws.push(rawMatch);
+          }
+        }
+      } catch {
+        if (lower.includes(variant.toLowerCase())) {
+          if (!matchedRaws.some((r) => r.toLowerCase() === variant.toLowerCase())) {
+            matchedRaws.push(variant);
+          }
         }
       }
     }

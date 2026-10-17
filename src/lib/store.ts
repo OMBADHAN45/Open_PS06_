@@ -215,16 +215,26 @@ function parseJD(raw: string): JobParseResult {
   const seen = new Set<string>();
   for (const [canonical, variants] of Object.entries(SKILL_VARIANTS)) {
     for (const v of variants) {
-      const re = new RegExp("(^|[^a-z0-9+#])" + v + "([^a-z0-9+#]|$)", "i");
-      if (re.test(lower)) {
-        // capture the raw matched variant
-        const m = lower.match(new RegExp(v, "i"));
-        const raw = m ? m[0] : canonical;
-        if (!seen.has(canonical)) {
-          seen.add(canonical);
-          found.push({ raw, canonical });
+      try {
+        const re = new RegExp("(^|[^a-z0-9+#])" + v + "([^a-z0-9+#]|$)", "i");
+        if (re.test(lower)) {
+          // capture the raw matched variant
+          const m = lower.match(new RegExp(v, "i"));
+          const raw = m ? m[0] : canonical;
+          if (!seen.has(canonical)) {
+            seen.add(canonical);
+            found.push({ raw, canonical });
+          }
+          break;
         }
-        break;
+      } catch {
+        if (lower.includes(v.toLowerCase())) {
+          if (!seen.has(canonical)) {
+            seen.add(canonical);
+            found.push({ raw: v, canonical });
+          }
+          break;
+        }
       }
     }
   }
