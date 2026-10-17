@@ -53,9 +53,22 @@ export function ProctoringTab() {
   const students = useAppStore((s) => s.students);
   const recordSession = useAppStore((s) => s.recordProctorSession);
   const applyResult = useAppStore((s) => s.applyAssessmentResult);
+  const setIsProctoringActive = useAppStore((s) => s.setIsProctoringActive);
   const student = students.find((s) => s.id === activeStudentId) ?? students[0];
 
   const [phase, setPhase] = useState<Phase>("idle");
+
+  // Disable global chatbot during active proctored assessment to enforce anti-cheat policy
+  useEffect(() => {
+    if (phase === "exam" || phase === "loading" || phase === "handshake") {
+      setIsProctoringActive(true);
+    } else {
+      setIsProctoringActive(false);
+    }
+    return () => {
+      setIsProctoringActive(false);
+    };
+  }, [phase, setIsProctoringActive]);
   const [skill, setSkill] = useState<string>("");
   const [questions, setQuestions] = useState<MCQ[]>([]);
   const [answers, setAnswers] = useState<Record<number, number>>({});

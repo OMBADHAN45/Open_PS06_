@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { GlobalChatbot } from "@/components/GlobalChatbot";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className={`${sora.variable} font-sans antialiased bg-background text-foreground`}>
         {children}
         <Toaster />
+        <GlobalChatbot />
       </body>
     </html>
   );

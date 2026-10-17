@@ -155,7 +155,7 @@ export function PortalShell({
       </div>
       <button
         onClick={() => setMobileNav(true)}
-        className="fixed bottom-4 right-4 z-30 rounded-full border border-indigo-200 bg-indigo-600 p-3 text-white shadow-lg shadow-indigo-500/30 md:hidden cursor-pointer"
+        className="fixed bottom-4 left-4 z-30 rounded-full border border-indigo-200 bg-indigo-600 p-3 text-white shadow-lg shadow-indigo-500/30 md:hidden cursor-pointer"
         aria-label="Open navigation"
       >
         ☰

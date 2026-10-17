@@ -32,6 +32,37 @@ import {
 import { type StudentSignupPayload } from "./student-signup-types";
 
 export type View = "landing" | "student" | "industry" | "tpo";
+export type ActiveRole = "Student" | "Industry" | "TPO";
+
+export interface ChatAction {
+  label: string;
+  action: "tab" | "inspector" | "proof" | "custom";
+  payload?: any;
+}
+
+export interface ChatMessage {
+  id: string;
+  sender: "user" | "ai" | "system";
+  text: string;
+  timestamp: number;
+  role?: ActiveRole;
+  actions?: ChatAction[];
+  metadata?: {
+    candidateCards?: {
+      id: string;
+      name: string;
+      branch: string;
+      cgpa: number;
+      sqlScore?: number;
+      reactScore?: number;
+      overallFit?: number;
+      verifiedCount: number;
+      githubUser: string;
+      avatarColor: string;
+    }[];
+    metrics?: { label: string; value: string | number }[];
+  };
+}
 
 export interface ProctorSession {
   skill: string;
@@ -139,6 +170,18 @@ interface AppState {
   rawSources: { id: string; company: string; role: string; location: string; ctc?: string; source: string; rawText?: string; postedAt: number }[];
   addRawSource: (s: { company: string; role: string; location: string; ctc?: string; source: string; rawText?: string }) => void;
   clearRawSources: () => void;
+
+  // Drishti AI Copilot state
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  toggleIsOpen: () => void;
+  activeRole: ActiveRole;
+  setActiveRole: (role: ActiveRole) => void;
+  chatHistory: ChatMessage[];
+  addChatMessage: (msg: ChatMessage) => void;
+  clearChatHistory: () => void;
+  isProctoringActive: boolean;
+  setIsProctoringActive: (active: boolean) => void;
 }
 
 const uid = (p: string) => p + "_" + Math.random().toString(36).slice(2, 9);
@@ -607,6 +650,18 @@ export const useAppStore = create<AppState>((set, get) => ({
       ],
     })),
   clearRawSources: () => set({ rawSources: [] }),
+
+  // Drishti AI Copilot state
+  isOpen: false,
+  setIsOpen: (isOpen) => set({ isOpen }),
+  toggleIsOpen: () => set((s) => ({ isOpen: !s.isOpen })),
+  activeRole: "Student",
+  setActiveRole: (role) => set({ activeRole: role }),
+  chatHistory: [],
+  addChatMessage: (msg) => set((s) => ({ chatHistory: [...s.chatHistory, msg] })),
+  clearChatHistory: () => set({ chatHistory: [] }),
+  isProctoringActive: false,
+  setIsProctoringActive: (active) => set({ isProctoringActive: active }),
 }));
 
 // selector helpers
